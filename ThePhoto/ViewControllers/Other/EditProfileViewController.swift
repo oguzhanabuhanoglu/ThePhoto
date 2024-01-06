@@ -1,17 +1,18 @@
 //
-//  SearchViewController.swift
+//  EditProfileViewController.swift
 //  ThePhoto
 //
-//  Created by Oğuzhan Abuhanoğlu on 6.01.2024.
+//  Created by Oğuzhan Abuhanoğlu on 7.01.2024.
 //
 
 import UIKit
 
-class SearchViewController: UIViewController {
+class EditProfileViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+
+        // Do any additional setup after loading the view.
     }
     
 
