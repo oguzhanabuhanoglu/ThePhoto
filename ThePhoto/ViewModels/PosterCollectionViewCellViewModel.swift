@@ -9,5 +9,5 @@ import Foundation
 
 struct PosterCollectionViewCellViewModel {
     let username: String
-    let profilePicture: URL
+    let profilePictureURL: URL
 }

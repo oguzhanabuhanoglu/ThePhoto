@@ -11,7 +11,6 @@ class TabBarViewController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         //DEFİNE VCS
         let search = SearchViewController()
         let feed = FeedViewController()
@@ -31,6 +30,7 @@ class TabBarViewController: UITabBarController {
         nav2.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "house"), tag: 1)
         nav3.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "person"), tag: 1)
         
+
         self.setViewControllers([nav1, nav2, nav3], animated: false)
         
         

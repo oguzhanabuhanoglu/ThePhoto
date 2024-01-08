@@ -39,6 +39,11 @@
 		BFE5D25D2B4B39F600509302 /* PostCaptionCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE5D25C2B4B39F600509302 /* PostCaptionCollectionViewCellViewModel.swift */; };
 		BFE5D25F2B4B3A1B00509302 /* PostDatetimeCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE5D25E2B4B3A1B00509302 /* PostDatetimeCollectionViewCellViewModel.swift */; };
 		BFE5D2612B4B3BFF00509302 /* FeedCellTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE5D2602B4B3BFF00509302 /* FeedCellTypes.swift */; };
+		BFE5D2632B4B411400509302 /* PosterCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE5D2622B4B411400509302 /* PosterCollectionViewCell.swift */; };
+		BFE5D2652B4B412B00509302 /* PostCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE5D2642B4B412B00509302 /* PostCollectionViewCell.swift */; };
+		BFE5D2672B4B413D00509302 /* PostActionsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE5D2662B4B413D00509302 /* PostActionsCollectionViewCell.swift */; };
+		BFE5D2692B4B415000509302 /* PostCaptionCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE5D2682B4B415000509302 /* PostCaptionCollectionViewCell.swift */; };
+		BFE5D26B2B4B416400509302 /* PostedDateCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE5D26A2B4B416400509302 /* PostedDateCollectionViewCell.swift */; };
 		EA7F7FEB5C2F5F199E4A25BA /* Pods_ThePhoto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91CC3445AB4F73E1B0474F7E /* Pods_ThePhoto.framework */; };
 /* End PBXBuildFile section */
 
@@ -102,6 +107,11 @@
 		BFE5D25C2B4B39F600509302 /* PostCaptionCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCaptionCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
 		BFE5D25E2B4B3A1B00509302 /* PostDatetimeCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDatetimeCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
 		BFE5D2602B4B3BFF00509302 /* FeedCellTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCellTypes.swift; sourceTree = "<group>"; };
+		BFE5D2622B4B411400509302 /* PosterCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosterCollectionViewCell.swift; sourceTree = "<group>"; };
+		BFE5D2642B4B412B00509302 /* PostCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCollectionViewCell.swift; sourceTree = "<group>"; };
+		BFE5D2662B4B413D00509302 /* PostActionsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostActionsCollectionViewCell.swift; sourceTree = "<group>"; };
+		BFE5D2682B4B415000509302 /* PostCaptionCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCaptionCollectionViewCell.swift; sourceTree = "<group>"; };
+		BFE5D26A2B4B416400509302 /* PostedDateCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostedDateCollectionViewCell.swift; sourceTree = "<group>"; };
 		FDD8EC46A987BC8BF75A94F1 /* Pods-ThePhotoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThePhotoTests.debug.xcconfig"; path = "Target Support Files/Pods-ThePhotoTests/Pods-ThePhotoTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -257,6 +267,11 @@
 		BFE2A46F2B49E22700EABD48 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				BFE5D2622B4B411400509302 /* PosterCollectionViewCell.swift */,
+				BFE5D2642B4B412B00509302 /* PostCollectionViewCell.swift */,
+				BFE5D2662B4B413D00509302 /* PostActionsCollectionViewCell.swift */,
+				BFE5D2682B4B415000509302 /* PostCaptionCollectionViewCell.swift */,
+				BFE5D26A2B4B416400509302 /* PostedDateCollectionViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -546,10 +561,13 @@
 				BFE2A4832B49E5B300EABD48 /* DatabaseManager.swift in Sources */,
 				BFE2A4852B49E5BF00EABD48 /* StorageManager.swift in Sources */,
 				BFE2A4732B49E45000EABD48 /* SearchViewController.swift in Sources */,
+				BFE5D26B2B4B416400509302 /* PostedDateCollectionViewCell.swift in Sources */,
 				BFE5D2582B4B39AE00509302 /* PostCollectionViewCellViewModel.swift in Sources */,
 				BFE2A4422B49ACB300EABD48 /* ThePhoto.xcdatamodeld in Sources */,
 				BFE2A43C2B49ACB300EABD48 /* FeedViewController.swift in Sources */,
 				BFE2A4712B49E40F00EABD48 /* ProfileViewController.swift in Sources */,
+				BFE5D2692B4B415000509302 /* PostCaptionCollectionViewCell.swift in Sources */,
+				BFE5D2632B4B411400509302 /* PosterCollectionViewCell.swift in Sources */,
 				BFE5D25F2B4B3A1B00509302 /* PostDatetimeCollectionViewCellViewModel.swift in Sources */,
 				BFE5D2542B49F70100509302 /* EditProfileViewController.swift in Sources */,
 				BFE5D24D2B49F2B900509302 /* User.swift in Sources */,
@@ -562,9 +580,11 @@
 				BFE5D25D2B4B39F600509302 /* PostCaptionCollectionViewCellViewModel.swift in Sources */,
 				BFE2A4752B49E46000EABD48 /* NotificationsViewController.swift in Sources */,
 				BFE2A4772B49E47100EABD48 /* ListViewController.swift in Sources */,
+				BFE5D2652B4B412B00509302 /* PostCollectionViewCell.swift in Sources */,
 				BFE2A47D2B49E57200EABD48 /* SignInViewController.swift in Sources */,
 				BFE5D2562B4B399900509302 /* PosterCollectionViewCellViewModel.swift in Sources */,
 				BFE2A43A2B49ACB300EABD48 /* SceneDelegate.swift in Sources */,
+				BFE5D2672B4B413D00509302 /* PostActionsCollectionViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
