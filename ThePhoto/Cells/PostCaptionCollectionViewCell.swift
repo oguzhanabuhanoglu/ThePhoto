@@ -7,6 +7,7 @@
 
 import UIKit
 
+
 class PostCaptionCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "PostCaptionCollectionViewCell"

@@ -68,16 +68,18 @@ public class AuthManager {
             
             DatabaseManager.shared.findUser(with: email) { user in
                 guard let user = user else {
-                    //completion(.failure(AuthError.signInFailed))
+                    completion(.failure(AuthError.signInFailed))
                     return
             }
                 
             Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
                 guard authResult != nil, error == nil else {
-                    //completion(.failure(AuthError.signInFailed))
+                    completion(.failure(AuthError.signInFailed))
                     return
                 }
                 
+                UserDefaults.standard.setValue(user.username, forKey: "username")
+                UserDefaults.standard.setValue(user.email, forKey: "email")
                 completion(.success(user))
                 
                 

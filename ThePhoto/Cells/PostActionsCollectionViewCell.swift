@@ -8,15 +8,18 @@
 import UIKit
 
 protocol PostActionsCollectionViewCellDelegate : AnyObject {
-    func didTapLikeButton()
+    func didTapLikeButton(isLiked: Bool)
     func didTapCommentButton()
+    func didTapLikeCount()
 }
 
 class PostActionsCollectionViewCell: UICollectionViewCell {
 
     static let identifier = "PostActionsCollectionViewCell"
     
-    weak var delegate : PostActionsCollectionViewCellDelegate?
+    weak var delegate: PostActionsCollectionViewCellDelegate?
+    
+    private var isLiked = false
     
     let likeButton : UIButton = {
         let button = UIButton()
@@ -58,6 +61,10 @@ class PostActionsCollectionViewCell: UICollectionViewCell {
         
         likeButton.addTarget(self, action: #selector(didTapLikeButton), for: UIControl.Event.touchUpInside)
         commentButon.addTarget(self, action: #selector(didTapCommentButton), for: UIControl.Event.touchUpInside)
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapLikersLabel))
+        likersLabel.isUserInteractionEnabled = true
+        likersLabel.addGestureRecognizer(tap)
     }
     
     required init?(coder: NSCoder) {
@@ -93,11 +100,25 @@ class PostActionsCollectionViewCell: UICollectionViewCell {
     }
     
     @objc func didTapLikeButton() {
-        delegate?.didTapLikeButton()
+        if self.isLiked {
+            let image = UIImage(systemName: "suit.heart", withConfiguration: UIImage.SymbolConfiguration(pointSize: 30))
+            likeButton.setImage(image, for: UIControl.State.normal)
+            likeButton.tintColor = .label
+        }else{
+            let image = UIImage(systemName: "suit.heart.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 30))
+            likeButton.setImage(image, for: UIControl.State.normal)
+            likeButton.tintColor = .red
+        }
+        self.isLiked = !isLiked
+        delegate?.didTapLikeButton(isLiked: !isLiked)
     }
     
     @objc func didTapCommentButton() {
         delegate?.didTapCommentButton()
+    }
+    
+    @objc func didTapLikersLabel(){
+        delegate?.didTapLikeCount()
     }
 
 

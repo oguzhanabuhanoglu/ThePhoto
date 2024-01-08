@@ -192,15 +192,22 @@ class SignUpViewController: UIViewController, UIImagePickerControllerDelegate, U
         //create user with authmanager
         
         AuthManager.shared.signUp(username: username, email: email, password: password, profilePicture: data) { result in
-            switch result {
-            case.success(let user):
-                let tabBar = TabBarViewController()
-                tabBar.modalPresentationStyle = .fullScreen
-                tabBar.selectedIndex = 2
-                self.present(tabBar, animated: true)
-                print(AuthManager.shared.auth.currentUser?.email)
-            case.failure(let error):
-                self.makeAlert(tittleInput: "ERROR", messageInput: error.localizedDescription ?? "We are unable to sign you up")
+            
+            DispatchQueue.main.async {
+                switch result {
+                case.success(let user):
+                    
+                    UserDefaults.standard.setValue(user.email, forKey: "email")
+                    UserDefaults.standard.setValue(user.username, forKey: "username")
+                    
+                    let tabBar = TabBarViewController()
+                    tabBar.modalPresentationStyle = .fullScreen
+                    tabBar.selectedIndex = 2
+                    self.present(tabBar, animated: true)
+                    
+                case.failure(let error):
+                    print(error)
+                }
             }
         }
     }

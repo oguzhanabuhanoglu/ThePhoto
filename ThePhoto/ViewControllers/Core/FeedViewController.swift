@@ -15,7 +15,7 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        title = "The Photo"
+        navigationItem.title = "The Photo"
         view.backgroundColor = .systemBackground
         configurationCollectionView()
         fetchPost()
@@ -39,7 +39,19 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
             .timesTamp(viewModel: PostDatetimeCollectionViewCellViewModel(date: Date()))
         ]
         
+        let postData2: [FeedCellTypes] = [
+            .poster(viewModel: PosterCollectionViewCellViewModel(username: "Oguzhan",
+                                                                 profilePictureURL:
+                                                                    URL(string:"https://iosacademy.io/assets/images/brand/icon.jpg")!)),
+            .post(viewModel: PostCollectionViewCellViewModel(postUrl:
+                                                                URL(string: "https://iosacademy.io/assets/images/brand/icon.jpg")!)),
+            .actions(viewModel: PostActionsCollectionViewCellViewModel(isLiked: true, likers: ["annen"])),
+            .caption(viewModel: PostCaptionCollectionViewCellViewModel(username: "Oguzhan", caption: "zınıltısyon")),
+            .timesTamp(viewModel: PostDatetimeCollectionViewCellViewModel(date: Date()))
+        ]
+        
         viewModels.append(postData)
+        viewModels.append(postData2)
         collectionView?.reloadData()
     }
     
@@ -62,6 +74,7 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
                 fatalError()
             }
             cell.configure(with: viewModel)
+            cell.delegate = self
             return cell
         case .post(let viewModel):
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PostCollectionViewCell.identifier, for: indexPath) as? PostCollectionViewCell else {
@@ -74,6 +87,7 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
                 fatalError()
             }
             cell.configure(with: viewModel)
+            cell.delegate = self
             return cell
         case .caption(let viewModel):
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PostCaptionCollectionViewCell.identifier, for: indexPath) as? PostCaptionCollectionViewCell else {
@@ -93,8 +107,49 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
     
 }
 
+extension FeedViewController: PosterCollectionViewCellDelegate {
+    func didTapMoreButton() {
+        let actionSheet = UIAlertController(title: "Post Options", message: nil, preferredStyle: UIAlertController.Style.actionSheet)
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil))
+        actionSheet.addAction(UIAlertAction(title: "Report Post", style: .destructive, handler: { [weak self] _ in
+            self?.reportPost()
+        }))
+        present(actionSheet, animated: true)
+    }
+    
+    func reportPost(){
+        
+    }
+    
+    func didTapUsername() {
+        let vc = ProfileViewController(user: User(username: "Oguzhan", email: "Oguzhanabuhanoglu@gmail.com"))
+        //let vc = ProfileViewController()
+        navigationController?.pushViewController(vc, animated: true)
+    }
+}
 
 
+extension FeedViewController: PostActionsCollectionViewCellDelegate {
+    func didTapLikeButton(isLiked: Bool) {
+        //call database to update like state
+    }
+    
+    func didTapCommentButton() {
+        let vc = PostViewController()
+        vc.title = "Post"
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func didTapLikeCount() {
+        let vc = ListViewController()
+        vc.title = "List"
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    
+}
+
+//CREATE COLLECTİON VİEW WİTH COMPOSITIONAL LAYOUT
 extension FeedViewController {
     func configurationCollectionView(){
         let sectionHeight : CGFloat = 180 + view.frame.size.width

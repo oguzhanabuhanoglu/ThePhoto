@@ -9,7 +9,7 @@ import UIKit
 import SDWebImage
 
 protocol PosterCollectionViewCellDelegate : AnyObject {
-    func didTapMostButton()
+    func didTapMoreButton()
     func didTapUsername()
 }
 
@@ -54,7 +54,8 @@ class PosterCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(moreButton)
         
         moreButton.addTarget(self, action: #selector(didTapMoreButton), for: UIControl.Event.touchUpInside)
-        let tap = UITapGestureRecognizer(target: self, action: dadTapUsername)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dadTapUsername))
+        usernameLabel.isUserInteractionEnabled = true
         usernameLabel.addGestureRecognizer(tap)
     }
     
@@ -89,7 +90,7 @@ class PosterCollectionViewCell: UICollectionViewCell {
 
     
     @objc func didTapMoreButton() {
-        delegate?.didTapMostButton()
+        delegate?.didTapMoreButton()
     }
     
     @objc func dadTapUsername() {
