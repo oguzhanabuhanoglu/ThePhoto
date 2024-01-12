@@ -46,6 +46,7 @@ class PostShareViewController: UIViewController {
         view.addSubview(captionText)
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Share", style: UIBarButtonItem.Style.done, target: self, action: #selector(didTapShareButton))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(didTapCloseButton))
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -59,13 +60,17 @@ class PostShareViewController: UIViewController {
         imageView.frame = CGRect(x: 0, y: view.safeAreaInsets.top, width: view.frame.width, height: view.frame.width)
         captionText.frame = CGRect(x: 10, y: view.frame.height * 0.60, width: view.frame.width - 20, height: view.frame.height * 0.15)
     }
+    
+    @objc func didTapCloseButton() {
+        self.navigationController?.popToRootViewController(animated: false)
+        self.tabBarController?.selectedIndex = 1
+    }
 
     @objc func didTapShareButton(){
         var caption = captionText.text ?? ""
         if caption == "Add Caption..." {
             caption = ""
         }
-        
         //Upload post, update database
         
         //generate post ID
@@ -77,11 +82,24 @@ class PostShareViewController: UIViewController {
             guard success else{
                 return
             }
+            
+            //new post
+            let newPost = Post(id: newPostID,
+                               caption: caption,
+                               postedDate: String.dateString(from: Date()) ?? "",
+                               likers: [])
+            
             //update database
-            
-            
+            DatabaseManager.shared.createPost(newPost: newPost) { [weak self] finished in
+                guard finished else {
+                    return
+                }
+                DispatchQueue.main.async {
+                    self?.navigationController?.popToRootViewController(animated: false)
+                    self?.tabBarController?.selectedIndex = 1
+                }
+            }
         }
-        
     }
     
     private func createNewPostID() -> String? {
