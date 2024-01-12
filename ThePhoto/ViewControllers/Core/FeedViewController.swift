@@ -24,7 +24,7 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        collectionView?.frame = CGRect(x: 0, y: view.frame.height / 17, width: view.frame.width, height: view.frame.height - (view.frame.height / 17))
+        collectionView?.frame = view.bounds
         
     }
     
@@ -53,8 +53,20 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
             .timesTamp(viewModel: PostDatetimeCollectionViewCellViewModel(date: Date()))
         ]
         
+        let postData3: [FeedCellTypes] = [
+            .poster(viewModel: PosterCollectionViewCellViewModel(username: "Oguzhan",
+                                                                 profilePictureURL:
+                                                                    URL(string:"https://iosacademy.io/assets/images/brand/icon.jpg")!)),
+            .post(viewModel: PostCollectionViewCellViewModel(postUrl:
+                                                                URL(string: "https://iosacademy.io/assets/images/brand/icon.jpg")!)),
+            .actions(viewModel: PostActionsCollectionViewCellViewModel(isLiked: true, likers: ["annen"])),
+            .caption(viewModel: PostCaptionCollectionViewCellViewModel(username: "Oguzhan", caption: "zınıltısyon")),
+            .timesTamp(viewModel: PostDatetimeCollectionViewCellViewModel(date: Date()))
+        ]
+        
         viewModels.append(postData)
         viewModels.append(postData2)
+        viewModels.append(postData3)
         collectionView?.reloadData()
     }
     
@@ -114,6 +126,7 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: FeedChallangeHeaderCollectionReusableView.identifier, for: indexPath) as! FeedChallangeHeaderCollectionReusableView
+            headerView.delegate = self
             return headerView
         } else {
             return UICollectionReusableView()
@@ -151,7 +164,10 @@ extension FeedViewController: PosterCollectionViewCellDelegate {
 
 extension FeedViewController: FeedChallangeHeaderCollectionReusableViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func didTapCameraButton() {
-        let sheet = UIAlertController(title: "New challange time", message: "Share daily post", preferredStyle: UIAlertController.Style.actionSheet)
+        /*let vc = CameraViewController()
+        navigationController?.pushViewController(vc, animated: true)
+        print("tapped")*/
+        let sheet = UIAlertController(title: "New Challange Time", message: "Share new post", preferredStyle: UIAlertController.Style.actionSheet)
         
         sheet.addAction(UIAlertAction(title: "Take a photo", style: UIAlertAction.Style.default, handler: { [weak self] _ in
             DispatchQueue.main.async {
@@ -177,6 +193,16 @@ extension FeedViewController: FeedChallangeHeaderCollectionReusableViewDelegate,
         
         present(sheet, animated: true)
     }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else {
+            return
+        }
+        let vc = PostShareViewController(image: image)
+        navigationController?.pushViewController(vc, animated: true)
+        dismiss(animated: true)
+    }
+    
 }
 
 

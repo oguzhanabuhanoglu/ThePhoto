@@ -16,11 +16,17 @@ public class StorageManager {
     public enum storageErrorManager: Error {
         case failedToDownload
     }
+
+    public func uploadPost(data: Data?, id: String, completion: @escaping (Bool) -> Void){
+        guard let username = UserDefaults.standard.string(forKey: "username"), let data = data else {
+            return
+        }
+        storage.child("\(username)/posts/\(id).png").putData(data, metadata: nil) { _, error in
+            completion(error == nil)
+        }
+    }
     
-    /*public func uploadUserPost(model: UserPost, completion: @escaping (Result<URL, Error>) -> Void) {
-        
-    }*/
-    
+    //uploda profile picture which i get when user sign up
     public func uploadProfilePicture(username: String, data: Data?, completion: @escaping (Bool) -> Void){
         guard let data = data else {
             return
@@ -29,6 +35,8 @@ public class StorageManager {
             completion(error == nil)
         }
     }
+    
+    
  
     
 }

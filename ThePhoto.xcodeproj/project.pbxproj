@@ -46,7 +46,8 @@
 		BFE5D26B2B4B416400509302 /* PostedDateCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE5D26A2B4B416400509302 /* PostedDateCollectionViewCell.swift */; };
 		BFE5D26D2B4C1AD100509302 /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE5D26C2B4C1AD000509302 /* PostViewController.swift */; };
 		BFE5D26F2B4C5CAE00509302 /* FeedChallangeHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE5D26E2B4C5CAE00509302 /* FeedChallangeHeaderCollectionReusableView.swift */; };
-		BFE5D2722B4ECF3700509302 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE5D2712B4ECF3700509302 /* CameraViewController.swift */; };
+		BFEB97A72B5178A800F0107B /* PostShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEB97A62B5178A800F0107B /* PostShareViewController.swift */; };
+		BFEB97A92B51937F00F0107B /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEB97A82B51937F00F0107B /* Post.swift */; };
 		EA7F7FEB5C2F5F199E4A25BA /* Pods_ThePhoto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91CC3445AB4F73E1B0474F7E /* Pods_ThePhoto.framework */; };
 /* End PBXBuildFile section */
 
@@ -117,7 +118,8 @@
 		BFE5D26A2B4B416400509302 /* PostedDateCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostedDateCollectionViewCell.swift; sourceTree = "<group>"; };
 		BFE5D26C2B4C1AD000509302 /* PostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewController.swift; sourceTree = "<group>"; };
 		BFE5D26E2B4C5CAE00509302 /* FeedChallangeHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedChallangeHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
-		BFE5D2712B4ECF3700509302 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		BFEB97A62B5178A800F0107B /* PostShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostShareViewController.swift; sourceTree = "<group>"; };
+		BFEB97A82B51937F00F0107B /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		FDD8EC46A987BC8BF75A94F1 /* Pods-ThePhotoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThePhotoTests.debug.xcconfig"; path = "Target Support Files/Pods-ThePhotoTests/Pods-ThePhotoTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -233,6 +235,7 @@
 			children = (
 				BFE5D24E2B49F55D00509302 /* Extensions.swift */,
 				BFE5D24C2B49F2B900509302 /* User.swift */,
+				BFEB97A82B51937F00F0107B /* Post.swift */,
 				BFE5D2602B4B3BFF00509302 /* FeedCellTypes.swift */,
 			);
 			path = Models;
@@ -306,7 +309,7 @@
 				BFE2A4762B49E47100EABD48 /* ListViewController.swift */,
 				BFE5D26C2B4C1AD000509302 /* PostViewController.swift */,
 				BFE5D2532B49F70100509302 /* EditProfileViewController.swift */,
-				BFE5D2712B4ECF3700509302 /* CameraViewController.swift */,
+				BFEB97A62B5178A800F0107B /* PostShareViewController.swift */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -585,10 +588,12 @@
 				BFE2A4712B49E40F00EABD48 /* ProfileViewController.swift in Sources */,
 				BFE5D2692B4B415000509302 /* PostCaptionCollectionViewCell.swift in Sources */,
 				BFE5D2632B4B411400509302 /* PosterCollectionViewCell.swift in Sources */,
+				BFEB97A92B51937F00F0107B /* Post.swift in Sources */,
 				BFE5D25F2B4B3A1B00509302 /* PostDatetimeCollectionViewCellViewModel.swift in Sources */,
 				BFE5D2542B49F70100509302 /* EditProfileViewController.swift in Sources */,
 				BFE5D24D2B49F2B900509302 /* User.swift in Sources */,
 				BFE2A4792B49E4AB00EABD48 /* TabBarViewController.swift in Sources */,
+				BFEB97A72B5178A800F0107B /* PostShareViewController.swift in Sources */,
 				BFE2A4382B49ACB300EABD48 /* AppDelegate.swift in Sources */,
 				BFE5D26F2B4C5CAE00509302 /* FeedChallangeHeaderCollectionReusableView.swift in Sources */,
 				BFE5D25A2B4B39CB00509302 /* PostActionsCollectionViewCellViewModel.swift in Sources */,
@@ -602,7 +607,6 @@
 				BFE5D2652B4B412B00509302 /* PostCollectionViewCell.swift in Sources */,
 				BFE2A47D2B49E57200EABD48 /* SignInViewController.swift in Sources */,
 				BFE5D2562B4B399900509302 /* PosterCollectionViewCellViewModel.swift in Sources */,
-				BFE5D2722B4ECF3700509302 /* CameraViewController.swift in Sources */,
 				BFE2A43A2B49ACB300EABD48 /* SceneDelegate.swift in Sources */,
 				BFE5D2672B4B413D00509302 /* PostActionsCollectionViewCell.swift in Sources */,
 			);

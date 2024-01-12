@@ -39,7 +39,7 @@ public class AuthManager {
                     }
                     //insert into database
                     
-                    DatabaseManager.shared.insertNewUser(newUser: newUser) { succes in
+                    DatabaseManager.shared.createNewUser(newUser: newUser) { succes in
                         if succes {
                             StorageManager.shared.uploadProfilePicture(username: username, data: profilePicture) { uploadSucces in
                                 if uploadSucces {

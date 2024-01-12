@@ -19,7 +19,13 @@ public class DatabaseManager {
     }
     
     
-    public func insertNewUser(newUser :User, completion: @escaping (Bool) -> Void) {
+    public func createPost(post: Post, completion: @escaping (Bool) -> Void){
+        
+    }
+    
+    
+    
+    public func createNewUser(newUser :User, completion: @escaping (Bool) -> Void) {
         let reference = database.document("User/\(newUser.username)")
         guard let data = newUser.asDictionary() else{
             completion(false)
