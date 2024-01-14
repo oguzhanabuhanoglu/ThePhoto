@@ -78,13 +78,14 @@ class PostShareViewController: UIViewController {
             return
         }
         //Upload post
-        StorageManager.shared.uploadPost(data: image.pngData(), id: newPostID) { success in
-            guard success else{
+        StorageManager.shared.uploadPost(data: image.pngData(), id: newPostID) { newPostDownloadURL in
+            guard let url = newPostDownloadURL else{
                 return
             }
             
             //new post
             let newPost = Post(id: newPostID,
+                               postUrl: url.absoluteString,
                                caption: caption,
                                postedDate: String.dateString(from: Date()) ?? "",
                                likers: [])

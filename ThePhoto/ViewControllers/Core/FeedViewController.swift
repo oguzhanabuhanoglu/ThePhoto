@@ -19,6 +19,7 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
         view.backgroundColor = .systemBackground
         configurationCollectionView()
         fetchPost()
+    
         
     }
     
@@ -29,46 +30,77 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
     }
     
     
-    //MOCK DATA
-    func fetchPost(){
-        let postData: [FeedCellTypes] = [
-            .poster(viewModel: PosterCollectionViewCellViewModel(username: "Oguzhan",
-                                                                 profilePictureURL:
-                                                                    URL(string:"https://iosacademy.io/assets/images/brand/icon.jpg")!)),
-            .post(viewModel: PostCollectionViewCellViewModel(postUrl:
-                                                                URL(string: "https://iosacademy.io/assets/images/brand/icon.jpg")!)),
-            .actions(viewModel: PostActionsCollectionViewCellViewModel(isLiked: true, likers: ["annen"])),
-            .caption(viewModel: PostCaptionCollectionViewCellViewModel(username: "Oguzhan", caption: "zınıltısyon")),
-            .timesTamp(viewModel: PostDatetimeCollectionViewCellViewModel(date: Date()))
-        ]
+    private func fetchPost(){
+        guard let username = UserDefaults.standard.string(forKey: "username") else {
+            return
+        }
+        DatabaseManager.shared.getPosts(for: username) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case.success(let posts):
+                    
+                    let group = DispatchGroup()
+                    
+                    posts.forEach { model in
+                        group.enter()
+                        self?.createViewModel(model: model, username: username, completion: { success in
+                            defer {
+                                group.leave()
+                            }
+                            if !success{
+                                print("failed when creating vm")
+                            }
+                        })
+                        
+                        group.notify(queue: .main) {
+                            self?.collectionView?.reloadData()
+                        }
+                    
+                   /* posts.forEach { model in
+    
+                        self?.createViewModel(model: model, username: username, completion: { success in
+                    
+                            if !success{
+                                print("failed when creating vm")
+                            }else{
+                                self?.collectionView?.reloadData()
+                            }
+                        })*/
+                    }
+                case.failure(let error):
+                    print(error)
+                }
+            }
+        }
         
-        let postData2: [FeedCellTypes] = [
-            .poster(viewModel: PosterCollectionViewCellViewModel(username: "Oguzhan",
-                                                                 profilePictureURL:
-                                                                    URL(string:"https://iosacademy.io/assets/images/brand/icon.jpg")!)),
-            .post(viewModel: PostCollectionViewCellViewModel(postUrl:
-                                                                URL(string: "https://iosacademy.io/assets/images/brand/icon.jpg")!)),
-            .actions(viewModel: PostActionsCollectionViewCellViewModel(isLiked: true, likers: ["annen"])),
-            .caption(viewModel: PostCaptionCollectionViewCellViewModel(username: "Oguzhan", caption: "zınıltısyon")),
-            .timesTamp(viewModel: PostDatetimeCollectionViewCellViewModel(date: Date()))
-        ]
         
-        let postData3: [FeedCellTypes] = [
-            .poster(viewModel: PosterCollectionViewCellViewModel(username: "Oguzhan",
-                                                                 profilePictureURL:
-                                                                    URL(string:"https://iosacademy.io/assets/images/brand/icon.jpg")!)),
-            .post(viewModel: PostCollectionViewCellViewModel(postUrl:
-                                                                URL(string: "https://iosacademy.io/assets/images/brand/icon.jpg")!)),
-            .actions(viewModel: PostActionsCollectionViewCellViewModel(isLiked: true, likers: ["annen"])),
-            .caption(viewModel: PostCaptionCollectionViewCellViewModel(username: "Oguzhan", caption: "zınıltısyon")),
-            .timesTamp(viewModel: PostDatetimeCollectionViewCellViewModel(date: Date()))
-        ]
-        
-        viewModels.append(postData)
-        viewModels.append(postData2)
-        viewModels.append(postData3)
-        collectionView?.reloadData()
     }
+    
+    
+    private func createViewModel(model: Post, username: String, completion: @escaping (Bool) -> Void){
+            
+        StorageManager.shared.profilePictureURL(for: username) { [weak self] profilePictureUrl in
+            guard let postURL = URL(string: model.postUrl),let profilePictureURL = profilePictureUrl else {
+                return
+            }
+            let postData: [FeedCellTypes] = [
+                .poster(viewModel: PosterCollectionViewCellViewModel(username:username,profilePictureURL: profilePictureURL)),
+                .post(viewModel: PostCollectionViewCellViewModel(postUrl: postURL)),
+                .actions(viewModel: PostActionsCollectionViewCellViewModel(isLiked: false, likers: [])),
+                .caption(viewModel: PostCaptionCollectionViewCellViewModel(username: username, caption: model.caption)),
+                .timesTamp(viewModel: PostDatetimeCollectionViewCellViewModel(date: DateFormatter.formatter.date(from: model.postedDate) ?? Date()))
+            ]
+                           
+            self?.viewModels.append(postData)
+            completion(true)
+        }
+            
+    }
+    
+
+    
+    
+    
     
     //COLLECTION VIEW
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -132,6 +164,11 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
             return UICollectionReusableView()
         }
     }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: collectionView.frame.width, height: 100)
+    }
+    
 
 
     
@@ -157,16 +194,12 @@ extension FeedViewController: PosterCollectionViewCellDelegate {
     
     func didTapUsername() {
         let vc = ProfileViewController(user: User(username: "Oguzhan", email: "Oguzhanabuhanoglu@gmail.com"))
-        //let vc = ProfileViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
 }
 
 extension FeedViewController: FeedChallangeHeaderCollectionReusableViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func didTapCameraButton() {
-        /*let vc = CameraViewController()
-        navigationController?.pushViewController(vc, animated: true)
-        print("tapped")*/
         let sheet = UIAlertController(title: "New Challange Time", message: "Share new post", preferredStyle: UIAlertController.Style.actionSheet)
         
         sheet.addAction(UIAlertAction(title: "Take a photo", style: UIAlertAction.Style.default, handler: { [weak self] _ in
@@ -235,6 +268,7 @@ extension FeedViewController {
             //header
             let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50))
             let layoutHeader1 = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+            
 
 
 
@@ -279,9 +313,9 @@ extension FeedViewController {
             //section
             let section = NSCollectionLayoutSection(group: group)
             section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0)
-            if index == 0 {
+            /*if index == 0 {
                 section.boundarySupplementaryItems = [layoutHeader1]
-            }
+            }*/
             
             return section
             
@@ -290,7 +324,7 @@ extension FeedViewController {
     
 
         
-        collectionView.backgroundColor = .systemBackground
+        collectionView.backgroundColor = .blue
         //registers
         collectionView.register(FeedChallangeHeaderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: FeedChallangeHeaderCollectionReusableView.identifier)
         
