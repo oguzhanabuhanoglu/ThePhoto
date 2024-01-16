@@ -6,12 +6,13 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
 public struct Post : Codable {
     let id: String
     let postUrl: String
     let caption: String
-    let postedDate: String
+    var postedDate: String
     var likers: [String]
     
     //to get post data from storage

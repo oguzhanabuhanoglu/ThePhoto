@@ -21,18 +21,43 @@ public class DatabaseManager {
     
     public func getPosts(for username: String, completion: @escaping (Result<[Post], Error>) -> Void){
         let ref = database.collection("users").document(username).collection("posts")
-        
-        ref.getDocuments { snapshot, error in
-            guard let posts = snapshot?.documents.compactMap({
-                Post(with: $0.data())
-            }), error == nil else {
-                
+
+        ref.order(by: "postedDate", descending: true).getDocuments { snapshot, error in
+            guard let posts = snapshot?.documents.compactMap({Post(with: $0.data())}), error == nil else {
                 return
             }
-            
             completion(.success(posts))
         }
+       /* ref.getDocuments { snapshot, error in
+            guard let posts = snapshot?.documents.compactMap({Post(with: $0.data())}), error == nil else {
+                return
+            }
+            completion(.success(posts))
+        }*/
     }
+    
+    /*public func getPosts(for username: String, completion: @escaping (Result<[Post], Error>) -> Void) {
+        let ref = database.collection("users").document(username).collection("posts").order(by: "postedDate", descending: true).addSnapshotListener { snapshot, error in
+            guard error == nil, snapshot?.isEmpty == false else {
+                // Hata durumunu işle veya return yap
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.failure(error!)) // Hata türünü belirtin
+                }
+                return
+            }
+
+            // compactMap'ı sadece bir kere çağır
+            if var posts = snapshot?.documents.compactMap({ Post(with: $0.data()) }) {
+                completion(.success(posts))
+            } else {
+                // compactMap başarısız olduğunda işlemi hata olarak işle
+                completion(.failure(error!)) // Hata türünü belirtin
+            }
+        }
+    }*/
+
     
     
     public func createPost(newPost: Post, completion: @escaping (Bool) -> Void){

@@ -75,7 +75,7 @@ class PosterCollectionViewCell: UICollectionViewCell {
         let height = contentView.frame.size.height
         
         let size = height - 6
-        profileImageView.frame = CGRect(x: 2, y: 3, width: size, height: size)
+        profileImageView.frame = CGRect(x: 3, y: 3, width: size, height: size)
         profileImageView.layer.cornerRadius = size / 2
         
         usernameLabel.frame = CGRect(x: widht * 0.51 - (widht * 0.7) / 2, y: 2, width: widht * 0.7, height: size)

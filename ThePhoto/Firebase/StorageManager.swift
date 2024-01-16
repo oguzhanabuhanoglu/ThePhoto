@@ -41,10 +41,19 @@ public class StorageManager {
         }
     }
     
+    public func downloadPosrURL(for post: Post, completion: @escaping (URL?) -> Void) {
+        guard let ref = post.storageReference else {
+            return
+        }
+        storage.child(ref).downloadURL { url, _ in
+            completion(url)
+        }
+    }
+    
 
     //get profile picture url
     public func profilePictureURL(for username: String, completion: @escaping (URL?) -> Void){
-        storage.child("\(username)/profile_picture.png").downloadURL { url, _ in
+        storage.child("\(username)/profile_picture_png").downloadURL { url, _ in
             completion(url)
         }
         

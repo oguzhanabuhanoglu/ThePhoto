@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 class PostShareViewController: UIViewController {
 
@@ -96,8 +97,10 @@ class PostShareViewController: UIViewController {
                     return
                 }
                 DispatchQueue.main.async {
+                    self?.tabBarController?.tabBar.isHidden = false
                     self?.navigationController?.popToRootViewController(animated: false)
                     self?.tabBarController?.selectedIndex = 1
+                    
                 }
             }
         }

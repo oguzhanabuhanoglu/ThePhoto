@@ -183,9 +183,9 @@ class SignUpViewController: UIViewController, UIImagePickerControllerDelegate, U
         emailText.resignFirstResponder()
         passwordText.resignFirstResponder()
         
-        guard let username = usernameText.text, !username.isEmpty,
-           let email = emailText.text, !email.isEmpty,
-           let password = passwordText.text, !password.isEmpty, password.count >= 8 else {
+        guard let username = usernameText.text, !username.isEmpty, username.count >= 2,
+           let email = emailText.text,
+           let password = passwordText.text else {
             return
         }
         let data = profilePhoto.image?.pngData()
@@ -206,7 +206,7 @@ class SignUpViewController: UIViewController, UIImagePickerControllerDelegate, U
                     self.present(tabBar, animated: true)
                     
                 case.failure(let error):
-                    print(error)
+                    self.makeAlert(tittleInput: "Error!", messageInput: error.localizedDescription ?? "error")
                 }
             }
         }

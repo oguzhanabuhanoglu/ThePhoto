@@ -23,7 +23,7 @@ class PostCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.clipsToBounds = true
-        contentView.backgroundColor = .secondarySystemBackground
+        contentView.backgroundColor = .systemBackground
         contentView.addSubview(postImageView)
     }
     
@@ -43,8 +43,9 @@ class PostCollectionViewCell: UICollectionViewCell {
         let height = contentView.frame.size.height
         //postImageView.frame = contentView.bounds
         
-        postImageView.frame = CGRect(x: 0, y: 0, width: widht , height: height)
-        postImageView.layer.cornerRadius = 30
+        postImageView.frame = CGRect(x: 15, y: height / 2 - (widht - 30) / 2, width: widht - 30 , height: widht - 30)
+        postImageView.layer.cornerRadius = 1
+        
     }
     
     override func prepareForReuse() {

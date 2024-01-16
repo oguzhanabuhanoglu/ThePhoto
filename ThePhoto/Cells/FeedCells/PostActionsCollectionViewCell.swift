@@ -41,12 +41,9 @@ class PostActionsCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.backgroundColor = .systemBackground
         label.numberOfLines = 1
-        label.textAlignment = .center
+        label.textAlignment = .right
         label.textColor = .label
-        label.font = UIFont(name: "HelveticaNeue-Bold", size: 20)
-        label.layer.borderWidth = 1
-        label.layer.borderColor = UIColor.secondaryLabel.cgColor
-        label.layer.cornerRadius = 15
+        label.font = UIFont(name: "HelveticaNeue", size: 15)
         return label
     }()
     
@@ -77,9 +74,9 @@ class PostActionsCollectionViewCell: UICollectionViewCell {
         let height = contentView.frame.size.height
         
         let size = height - 6
-        likeButton.frame = CGRect(x: 5, y: 3, width: size, height: size)
+        likeButton.frame = CGRect(x: 8, y: 3, width: size, height: size)
         commentButon.frame = CGRect(x: widht * 0.15 , y: 3, width: size, height: size)
-        likersLabel.frame = CGRect(x: widht * 0.67, y: height * 0.5 - (height * 0.8) / 2, width: widht * 0.3, height: height * 0.8)
+        likersLabel.frame = CGRect(x: widht * 0.66, y: height * 0.5 - (height * 0.8) / 2, width: widht * 0.3, height: height * 0.8)
     }
     
     override func prepareForReuse() {
