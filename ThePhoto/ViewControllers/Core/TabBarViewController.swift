@@ -23,7 +23,7 @@ class TabBarViewController: UITabBarController {
         
         
         //DEFİNE VCS
-        let search = SearchViewController()
+        let search = ExploreViewController()
         let feed = FeedViewController()
         let profile = ProfileViewController(user: currentUser)
        // let profile = ProfileViewController()

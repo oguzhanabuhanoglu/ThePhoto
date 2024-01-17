@@ -18,32 +18,14 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
         // Do any additional setup after loading the view.
         navigationItem.title = "The Photo"
         view.backgroundColor = .systemBackground
-        fetchPost()
         configurationCollectionView()
+        collectionView?.register(FeedChallangeHeaderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: FeedChallangeHeaderCollectionReusableView.identifier)
+        fetchPost()
         
         //let navigationBarHeight = navigationController?.navigationBar.frame.height ?? 0
         //FeedChallangeHeaderView().delegate = self
         //view.addSubview(FeedChallangeHeaderView(frame: CGRect(x: 0, y: navigationBarHeight * 2, width: view.frame.size.width, height: view.frame.size.height / 17)))
         
-        // Genel başlık için bir layout öğesi oluştur
-        let globalHeader = NSCollectionLayoutBoundarySupplementaryItem(
-            layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50)),
-            elementKind: "GlobalHeader",
-            alignment: .top
-        )
-
-        
-        
-        // Ana grup için bir layout oluştur
-        let groupH = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(55)), subitems: [globalHeader])
-
-        // Ana bölümü oluştur ve genel başlığı ekleyin
-        let sectionh = NSCollectionLayoutSection(group: groupH)
-        sectionh.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 15, bottom: 10, trailing: 15)
-        sectionh.boundarySupplementaryItems = [globalHeader]
-        let layout = UICollectionViewCompositionalLayout { sectionIndex, environment in
-            return sectionh
-        }
        
         
     }
@@ -78,7 +60,7 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
                     }
                     
                     group.notify(queue: .main) {
-                        self?.collectionView?.reloadData()
+                        self!.collectionView?.reloadData()
                     }
                     
                 case.failure(let error):
@@ -92,7 +74,6 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
             
             StorageManager.shared.profilePictureURL(for: username) { [weak self] profilePictureUrl in
                 guard let postURL = URL(string: model.postUrl),let profilePictureURL = profilePictureUrl else {
-                    print("failed to get pictures url")
                     completion(false)
                     return
                 }
@@ -348,9 +329,6 @@ extension FeedViewController: FeedChallangeHeaderCollectionReusableViewDelegate,
                                                                 captionItem,
                                                                 timesTampItem
                                                              ])
-                
-                
-                
                 //section
                 let section = NSCollectionLayoutSection(group: group)
                 section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 15, bottom: 10, trailing: 15)
@@ -361,13 +339,8 @@ extension FeedViewController: FeedChallangeHeaderCollectionReusableViewDelegate,
                 
                 
             }))
-            
-            
-            
             collectionView.backgroundColor = .secondarySystemBackground
             //registers
-            collectionView.register(FeedChallangeHeaderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: FeedChallangeHeaderCollectionReusableView.identifier)
-            
             collectionView.register(PosterCollectionViewCell.self, forCellWithReuseIdentifier: PosterCollectionViewCell.identifier)
             collectionView.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: PostCollectionViewCell.identifier)
             collectionView.register(PostActionsCollectionViewCell.self, forCellWithReuseIdentifier: PostActionsCollectionViewCell.identifier)

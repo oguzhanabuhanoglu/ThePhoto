@@ -9,7 +9,21 @@ import UIKit
 import FirebaseFirestore
 
 class PostShareViewController: UIViewController {
-
+    
+    private let challangeLabel : UILabel = {
+        let label = UILabel()
+        label.backgroundColor = .systemBackground
+        label.layer.masksToBounds = true
+        label.layer.cornerRadius = 20
+        label.layer.borderWidth = 1
+        label.layer.borderColor = UIColor.secondaryLabel.cgColor
+        label.numberOfLines = 2
+        label.text = "with your best friend from school"
+        label.textAlignment = .center
+        label.font = UIFont(name: "Helvetica", size: 18)
+        return label
+    }()
+    
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
@@ -17,9 +31,17 @@ class PostShareViewController: UIViewController {
         return imageView
     }()
     
+    private let infoLabel : UILabel = {
+        let label = UILabel()
+        label.font = UIFont(name: "Helvetica-Bold", size: 15)
+        label.text = "Add Caption"
+        label.textColor = .label
+        label.textAlignment = .left
+        return label
+    }()
+    
     private let captionText : UITextView = {
         let textView = UITextView()
-        textView.text = "Add Caption..."
         textView.backgroundColor = .secondarySystemBackground
         textView.font = .systemFont(ofSize: 17)
         textView.textContainerInset = UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3)
@@ -43,7 +65,9 @@ class PostShareViewController: UIViewController {
         title = "New Challenge Post"
         
         imageView.image = image
+        view.addSubview(challangeLabel)
         view.addSubview(imageView)
+        view.addSubview(infoLabel)
         view.addSubview(captionText)
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Share", style: UIBarButtonItem.Style.done, target: self, action: #selector(didTapShareButton))
@@ -57,9 +81,15 @@ class PostShareViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        let widht = view.frame.width
+        let height = view.frame.height
         
-        imageView.frame = CGRect(x: 0, y: view.safeAreaInsets.top, width: view.frame.width, height: view.frame.width)
-        captionText.frame = CGRect(x: 10, y: view.frame.height * 0.60, width: view.frame.width - 20, height: view.frame.height * 0.15)
+        let imageSize = widht / 3.5
+        
+        challangeLabel.frame = CGRect(x: widht * 0.5 - (widht * 0.9) / 2, y: view.safeAreaInsets.top + 30, width: widht * 0.9, height: height * 0.05)
+        imageView.frame = CGRect(x: 5, y: height * 0.21, width: imageSize, height: imageSize)
+        infoLabel.frame = CGRect(x: 10 + imageSize, y: height * 0.21, width: widht - imageSize - 15, height: height * 0.04)
+        captionText.frame = CGRect(x: 10 + imageSize, y: height * 0.25, width: widht - imageSize - 15, height: imageSize - (height * 0.04))
     }
     
     @objc func didTapCloseButton() {
@@ -69,8 +99,8 @@ class PostShareViewController: UIViewController {
 
     @objc func didTapShareButton(){
         var caption = captionText.text ?? ""
-        if caption == "Add Caption..." {
-            caption = ""
+        if caption == "" {
+            caption = challangeLabel.text ?? ""
         }
         //Upload post, update database
         
@@ -98,8 +128,9 @@ class PostShareViewController: UIViewController {
                 }
                 DispatchQueue.main.async {
                     self?.tabBarController?.tabBar.isHidden = false
-                    self?.navigationController?.popToRootViewController(animated: false)
                     self?.tabBarController?.selectedIndex = 1
+                    self?.navigationController?.popToRootViewController(animated: false)
+                    
                     
                 }
             }
