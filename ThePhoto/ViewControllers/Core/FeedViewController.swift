@@ -18,8 +18,9 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
         // Do any additional setup after loading the view.
         navigationItem.title = "The Photo"
         view.backgroundColor = .systemBackground
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "heart"), style: UIBarButtonItem.Style.done, target: self, action: #selector(didTapNotifications))
         configurationCollectionView()
-        collectionView?.register(FeedChallangeHeaderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: FeedChallangeHeaderCollectionReusableView.identifier)
         fetchPost()
         
         //let navigationBarHeight = navigationController?.navigationBar.frame.height ?? 0
@@ -34,6 +35,12 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
         super.viewDidLayoutSubviews()
         collectionView?.frame = view.bounds
         
+    }
+    
+    @objc func didTapNotifications() {
+        let vc = NotificationsViewController()
+        vc.title = "Notifications"
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     
@@ -341,6 +348,8 @@ extension FeedViewController: FeedChallangeHeaderCollectionReusableViewDelegate,
             }))
             collectionView.backgroundColor = .secondarySystemBackground
             //registers
+            collectionView.register(FeedChallangeHeaderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: FeedChallangeHeaderCollectionReusableView.identifier)
+            
             collectionView.register(PosterCollectionViewCell.self, forCellWithReuseIdentifier: PosterCollectionViewCell.identifier)
             collectionView.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: PostCollectionViewCell.identifier)
             collectionView.register(PostActionsCollectionViewCell.self, forCellWithReuseIdentifier: PostActionsCollectionViewCell.identifier)

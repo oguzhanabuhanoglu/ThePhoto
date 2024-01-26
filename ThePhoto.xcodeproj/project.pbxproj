@@ -11,6 +11,10 @@
 		B92681840BA390665856F1DC /* Pods_ThePhoto_ThePhotoUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7289503582FB367A658C8449 /* Pods_ThePhoto_ThePhotoUITests.framework */; };
 		BF1DA7492B5534F800047477 /* FeedChallangeHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1DA7482B5534F800047477 /* FeedChallangeHeaderView.swift */; };
 		BF1DA74B2B5739F100047477 /* SearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1DA74A2B5739F100047477 /* SearchResultViewController.swift */; };
+		BF3F3B182B63B650000973FF /* FriendRequestTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3F3B172B63B650000973FF /* FriendRequestTableViewCell.swift */; };
+		BF3F3B1B2B63B6FE000973FF /* LikeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3F3B1A2B63B6FE000973FF /* LikeTableViewCell.swift */; };
+		BF3F3B1D2B63B70A000973FF /* CommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3F3B1C2B63B70A000973FF /* CommentTableViewCell.swift */; };
+		BF3F3B1F2B63B8EF000973FF /* NotificationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3F3B1E2B63B8EF000973FF /* NotificationsManager.swift */; };
 		BFE2A4382B49ACB300EABD48 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE2A4372B49ACB300EABD48 /* AppDelegate.swift */; };
 		BFE2A43A2B49ACB300EABD48 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE2A4392B49ACB300EABD48 /* SceneDelegate.swift */; };
 		BFE2A43C2B49ACB300EABD48 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE2A43B2B49ACB300EABD48 /* FeedViewController.swift */; };
@@ -81,6 +85,10 @@
 		BEC6A94E7644AC33FAAF852E /* Pods-ThePhoto-ThePhotoUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThePhoto-ThePhotoUITests.debug.xcconfig"; path = "Target Support Files/Pods-ThePhoto-ThePhotoUITests/Pods-ThePhoto-ThePhotoUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		BF1DA7482B5534F800047477 /* FeedChallangeHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedChallangeHeaderView.swift; sourceTree = "<group>"; };
 		BF1DA74A2B5739F100047477 /* SearchResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultViewController.swift; sourceTree = "<group>"; };
+		BF3F3B172B63B650000973FF /* FriendRequestTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestTableViewCell.swift; sourceTree = "<group>"; };
+		BF3F3B1A2B63B6FE000973FF /* LikeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeTableViewCell.swift; sourceTree = "<group>"; };
+		BF3F3B1C2B63B70A000973FF /* CommentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentTableViewCell.swift; sourceTree = "<group>"; };
+		BF3F3B1E2B63B8EF000973FF /* NotificationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsManager.swift; sourceTree = "<group>"; };
 		BFE2A4342B49ACB300EABD48 /* ThePhoto.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ThePhoto.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFE2A4372B49ACB300EABD48 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFE2A4392B49ACB300EABD48 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -166,6 +174,16 @@
 				B7C793D0EB18DEC1F2509AA9 /* Pods-ThePhotoTests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		BF3F3B192B63B6E2000973FF /* NotificationsCells */ = {
+			isa = PBXGroup;
+			children = (
+				BF3F3B172B63B650000973FF /* FriendRequestTableViewCell.swift */,
+				BF3F3B1A2B63B6FE000973FF /* LikeTableViewCell.swift */,
+				BF3F3B1C2B63B70A000973FF /* CommentTableViewCell.swift */,
+			);
+			path = NotificationsCells;
 			sourceTree = "<group>";
 		};
 		BFE2A42B2B49ACB300EABD48 = {
@@ -263,6 +281,7 @@
 				BFE2A4802B49E5A200EABD48 /* AuthManager.swift */,
 				BFE2A4822B49E5B300EABD48 /* DatabaseManager.swift */,
 				BFE2A4842B49E5BF00EABD48 /* StorageManager.swift */,
+				BF3F3B1E2B63B8EF000973FF /* NotificationsManager.swift */,
 			);
 			path = Firebase;
 			sourceTree = "<group>";
@@ -280,6 +299,7 @@
 		BFE2A46F2B49E22700EABD48 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				BF3F3B192B63B6E2000973FF /* NotificationsCells */,
 				BFE5D2702B4C5CB100509302 /* FeedCells */,
 			);
 			path = Cells;
@@ -600,10 +620,13 @@
 				BF1DA74B2B5739F100047477 /* SearchResultViewController.swift in Sources */,
 				BFE5D24D2B49F2B900509302 /* User.swift in Sources */,
 				BFE2A4792B49E4AB00EABD48 /* TabBarViewController.swift in Sources */,
+				BF3F3B182B63B650000973FF /* FriendRequestTableViewCell.swift in Sources */,
 				BFEB97A72B5178A800F0107B /* PostShareViewController.swift in Sources */,
 				BFE2A4382B49ACB300EABD48 /* AppDelegate.swift in Sources */,
 				BF1DA7492B5534F800047477 /* FeedChallangeHeaderView.swift in Sources */,
 				BFE5D26F2B4C5CAE00509302 /* FeedChallangeHeaderCollectionReusableView.swift in Sources */,
+				BF3F3B1F2B63B8EF000973FF /* NotificationsManager.swift in Sources */,
+				BF3F3B1B2B63B6FE000973FF /* LikeTableViewCell.swift in Sources */,
 				BFE5D25A2B4B39CB00509302 /* PostActionsCollectionViewCellViewModel.swift in Sources */,
 				BFE5D2612B4B3BFF00509302 /* FeedCellTypes.swift in Sources */,
 				BFE5D24F2B49F55D00509302 /* Extensions.swift in Sources */,
@@ -615,6 +638,7 @@
 				BFE5D2652B4B412B00509302 /* PostCollectionViewCell.swift in Sources */,
 				BFE2A47D2B49E57200EABD48 /* SignInViewController.swift in Sources */,
 				BFE5D2562B4B399900509302 /* PosterCollectionViewCellViewModel.swift in Sources */,
+				BF3F3B1D2B63B70A000973FF /* CommentTableViewCell.swift in Sources */,
 				BFE2A43A2B49ACB300EABD48 /* SceneDelegate.swift in Sources */,
 				BFE5D2672B4B413D00509302 /* PostActionsCollectionViewCell.swift in Sources */,
 			);
