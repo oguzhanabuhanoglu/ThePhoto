@@ -19,7 +19,7 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
     }()
     
     private let tableView : UITableView = {
-        let table = UITableView()
+        let table = UITableView(frame: .zero, style: .grouped)
         table.isHidden = true
         table.register(FriendRequestTableViewCell.self, forCellReuseIdentifier: FriendRequestTableViewCell.identifier)
         table.register(LikeTableViewCell.self, forCellReuseIdentifier: LikeTableViewCell.identifier)
@@ -27,6 +27,7 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
         return table
     }()
     
+    private var viewModels : [NotificationCellTypes] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,21 +50,61 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
 
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
+        return viewModels.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        return cell
+        let cellType = viewModels[indexPath.row]
+        switch cellType {
+        case .like(let viewModel):
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: LikeTableViewCell.identifier, for: indexPath) as? LikeTableViewCell else {
+                fatalError()
+            }
+            cell.configure(with: viewModel)
+            return cell
+        case .firendRequest(let viewModel):
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: FriendRequestTableViewCell.identifier, for: indexPath) as? FriendRequestTableViewCell else {
+                fatalError()
+            }
+            cell.configure(with: viewModel)
+            return cell
+        case .comment(let viewModel):
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: CommentTableViewCell.identifier, for: indexPath) as? CommentTableViewCell else {
+                fatalError()
+            }
+            cell.configure(with: viewModel)
+            return cell
+        }
+        
     }
     
     private func fetchNotifications(){
+        createMockData()
+    }
+    
+    private func createMockData(){
+        tableView.isHidden = false
+        guard let postUrl = URL(string: "https://iosacademy.io/assets/images/courses/swiftui.png") else {
+            return
+        }
         
-        noActivityLabel.isHidden = false
+        guard let iconUrl = URL(string: "https://iosacademy.io/assets/images/brand/icon.jpg") else {
+            return
+        }
+        
+        viewModels = [
+            .like(viewModel: LikeCellViewModel(username: "HakanKa", profilePictureUrl: iconUrl, postUrl: postUrl)),
+            .comment(viewModel: CommentCellViewModel(username: "ybasaran", profilePicturUrl: iconUrl, postUrl: postUrl)),
+            .firendRequest(viewModel: FriendRequestCellViewModel(username: "krcabtu", profilePictureUrl: iconUrl)),
+        ]
+        
+        tableView.reloadData()
     }
     
     
-    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return view.frame.height * 0.07
+    }
 
    
 
