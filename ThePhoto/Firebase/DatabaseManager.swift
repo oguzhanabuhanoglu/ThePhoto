@@ -5,6 +5,7 @@
 //  Created by Oğuzhan Abuhanoğlu on 6.01.2024.
 //
 
+
 import FirebaseFirestore
 
 public class DatabaseManager {
@@ -13,6 +14,29 @@ public class DatabaseManager {
     
     let database = Firestore.firestore()
     
+    
+    public func getNotifications(completion: @escaping ([TPNotification]) -> Void){
+        guard let username = UserDefaults.standard.string(forKey: "username") else {
+            return
+        }
+        let ref = database.collection("users").document(username).collection("notifications")
+        ref.getDocuments { snapshot, error in
+            guard let notifications = snapshot?.documents.compactMap({ TPNotification(with: $0.data())})
+                    , error == nil else {
+                completion([])
+                return
+            }
+            completion(notifications)
+        }
+    }
+    
+    public func insertNotification(identifier: String, data: [String:Any], for username: String) {
+        guard let username = UserDefaults.standard.string(forKey: "username") else {
+            return
+        }
+        let ref = database.collection("users").document(username).collection("notifications").document(identifier)
+        ref.setData(data)
+    }
     
     public func searchByUsername(with usernamePrefix: String, completion: @escaping ([User]) -> Void){
         let ref = database.collection("users")
@@ -83,6 +107,8 @@ public class DatabaseManager {
         }
       
     }
+    
+    
     /* ref.getDocuments { snapshot, error in
          guard let posts = snapshot?.documents.compactMap({Post(with: $0.data())}), error == nil else {
              return
@@ -110,6 +136,10 @@ public class DatabaseManager {
             }
         }
     }*/
+    
+   
+   
+    
 }
 
 

@@ -22,12 +22,13 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
         let table = UITableView(frame: .zero, style: .grouped)
         table.isHidden = true
         table.register(FriendRequestTableViewCell.self, forCellReuseIdentifier: FriendRequestTableViewCell.identifier)
-        table.register(LikeTableViewCell.self, forCellReuseIdentifier: LikeTableViewCell.identifier)
-        table.register(CommentTableViewCell.self, forCellReuseIdentifier: CommentTableViewCell.identifier)
+        table.register(LikeNotificationTableViewCell.self, forCellReuseIdentifier: LikeNotificationTableViewCell.identifier)
+        table.register(CommentNotificationTableViewCell.self, forCellReuseIdentifier: CommentNotificationTableViewCell.identifier)
         return table
     }()
     
     private var viewModels : [NotificationCellTypes] = []
+    private var models: [TPNotification] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,7 +38,7 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
     
         tableView.delegate = self
         tableView.dataSource = self
-        
+
         fetchNotifications()
     }
     
@@ -47,39 +48,53 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
         noActivityLabel.sizeToFit()
         noActivityLabel.center = view.center
     }
-
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModels.count
+    //fonksiyonun çıktısı bir TPNotificationstu bunu alıp burada olusturduğumu modele eşitledik.
+    private func fetchNotifications(){
+        NotificationsManager.shared.getNotifications { models in
+            DispatchQueue.main.async {
+                self.models = models
+                self.createViewModel()
+            }
+        }
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cellType = viewModels[indexPath.row]
-        switch cellType {
-        case .like(let viewModel):
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: LikeTableViewCell.identifier, for: indexPath) as? LikeTableViewCell else {
-                fatalError()
+    private func createViewModel(){
+        models.forEach { model in
+            guard let type = NotificationsManager.type(rawValue: model.notificationType) else {
+                return
             }
-            cell.configure(with: viewModel)
-            return cell
-        case .firendRequest(let viewModel):
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: FriendRequestTableViewCell.identifier, for: indexPath) as? FriendRequestTableViewCell else {
-                fatalError()
+            
+            let username = model.username
+            guard let profilePicture = URL(string :model.profilePicture) else {
+                return
             }
-            cell.configure(with: viewModel)
-            return cell
-        case .comment(let viewModel):
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: CommentTableViewCell.identifier, for: indexPath) as? CommentTableViewCell else {
-                fatalError()
+            
+            switch type {
+            case .like:
+                guard let postUrl = URL(string: model.postUrl ?? "") else {
+                    return
+                }
+                viewModels.append(.like(viewModel: LikeCellViewModel(username: username, profilePictureUrl: profilePicture, postUrl: postUrl)))
+            case .comment:
+                guard let postUrl = URL(string: model.postUrl ?? "") else {
+                    return
+                }
+                viewModels.append(.comment(viewModel: CommentCellViewModel(username: username, profilePicturUrl: profilePicture, postUrl: postUrl)))
+            case .friendRequest:
+                viewModels.append(.firendRequest(viewModel: FriendRequestCellViewModel(username: username, profilePictureUrl: profilePicture)))
             }
-            cell.configure(with: viewModel)
-            return cell
         }
         
-    }
-    
-    private func fetchNotifications(){
-        createMockData()
+        if viewModels.isEmpty {
+            noActivityLabel.isHidden = false
+            tableView.isHidden = true
+        }else{
+            noActivityLabel.isHidden = true
+            tableView.isHidden = false
+            tableView.reloadData()
+        }
+        
     }
     
     private func createMockData(){
@@ -100,12 +115,99 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
         
         tableView.reloadData()
     }
+
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return viewModels.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cellType = viewModels[indexPath.row]
+        switch cellType {
+        case .like(let viewModel):
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: LikeNotificationTableViewCell.identifier, for: indexPath) as? LikeNotificationTableViewCell else {
+                fatalError()
+            }
+            cell.configure(with: viewModel)
+            cell.delegate = self
+            return cell
+        case .firendRequest(let viewModel):
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: FriendRequestTableViewCell.identifier, for: indexPath) as? FriendRequestTableViewCell else {
+                fatalError()
+            }
+            cell.configure(with: viewModel)
+            //
+            return cell
+        case .comment(let viewModel):
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: CommentNotificationTableViewCell.identifier, for: indexPath) as? CommentNotificationTableViewCell else {
+                fatalError()
+            }
+            cell.configure(with: viewModel)
+            cell.delegate = self
+            return cell
+        }
+        
+    }
+    
+    
     
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return view.frame.height * 0.07
     }
 
-   
 
+}
+
+//ACTİONS
+//friends request eklemedim.pusudayım
+extension NotificationsViewController: LikeNotificationTableViewCellDelegate, CommentNotificationTableViewCellDelegate {
+    func likeNotificationTableViewCell(_ cell: LikeNotificationTableViewCell, didTapPostWith viewModel: LikeCellViewModel) {
+        //like alan postu açmamız lazım.viewModeldan username alıp databaseden username e göre postu cekmemiz lazım.
+        guard let index = viewModels.firstIndex(where: {
+            switch $0 {
+            case .comment, .firendRequest:
+                return false
+            case .like(let current):
+                return current == viewModel
+            }
+        })else{
+            return
+        }
+        
+        openPost(with: index, username: viewModel.username)
+        
+        // find post by id from particular
+        
+    }
+    
+    func commentNotificationTableViewCell(_ cell: CommentNotificationTableViewCell, didTapPostWith viewModel: CommentCellViewModel) {
+        guard let index = viewModels.firstIndex(where: {
+            switch $0{
+            case .like, .firendRequest:
+                return false
+            case .comment(let current):
+                return current == viewModel
+            }
+        })else {
+            return
+        }
+        
+        openPost(with: index, username: viewModel.username)
+     
+        
+    }
+    
+    func openPost(with index: Int, username: String){
+        guard index < models.count else {
+            return
+        }
+        
+        let model = models[index]
+        let username = username
+        guard let postID = model.postId else {
+            return
+        }
+    }
+    
 }

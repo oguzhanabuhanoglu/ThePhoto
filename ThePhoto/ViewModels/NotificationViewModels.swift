@@ -7,19 +7,19 @@
 
 import Foundation
 
-struct FriendRequestCellViewModel {
+struct FriendRequestCellViewModel: Equatable {
     let username: String
     let profilePictureUrl: URL
     
 }
 
-struct LikeCellViewModel {
+struct LikeCellViewModel: Equatable{
     let username: String
     let profilePictureUrl: URL
     let postUrl: URL
 }
 
-struct CommentCellViewModel {
+struct CommentCellViewModel: Equatable{
     let username: String
     let profilePicturUrl: URL
     let postUrl: URL

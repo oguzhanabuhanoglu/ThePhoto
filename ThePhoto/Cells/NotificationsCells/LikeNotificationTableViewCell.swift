@@ -1,5 +1,5 @@
 //
-//  CommentTableViewCell.swift
+//  LikeTableViewCell.swift
 //  ThePhoto
 //
 //  Created by Oğuzhan Abuhanoğlu on 26.01.2024.
@@ -7,9 +7,18 @@
 
 import UIKit
 
-class CommentTableViewCell: UITableViewCell {
+//fonksiyon içinde cell i almamızı anlamadım?
+protocol LikeNotificationTableViewCellDelegate : AnyObject {
+    func likeNotificationTableViewCell(_ cell: LikeNotificationTableViewCell, didTapPostWith viewModel: LikeCellViewModel)
+}
+
+class LikeNotificationTableViewCell: UITableViewCell {
+
+    static let identifier = "LikeTableViewCell"
     
-    static let identifier = "CommentTableViewCell"
+    weak var delegate: LikeNotificationTableViewCellDelegate?
+    
+    private var viewModel: LikeCellViewModel?
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -40,6 +49,18 @@ class CommentTableViewCell: UITableViewCell {
         addSubview(profileImageView)
         addSubview(label)
         addSubview(postImageView)
+        
+        postImageView.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapPost))
+        profileImageView.addGestureRecognizer(tap)
+    }
+    
+    //bu fonksiyonun içinden de viewModela ulaşabilmek için sınıf altında viewModelı tanımladık.Bu fonksiyon ve configure fonksiyonu altında unwrap ettik.
+    @objc func didTapPost(){
+        guard let vm = viewModel else {
+            return
+        }
+        delegate?.likeNotificationTableViewCell(self, didTapPostWith: vm)
     }
     
     required init?(coder: NSCoder) {
@@ -57,12 +78,11 @@ class CommentTableViewCell: UITableViewCell {
         
         let size2 = height - 6
         postImageView.frame = CGRect(x: widht - size2 - 2, y: 3, width: size2, height: size2)
-        
+    
         let labelSize = label.sizeThatFits(CGSize(width: widht - size - size2 - 9, height: height))
         label.frame = CGRect(x: widht * 0.52  - (widht * 0.7) / 2, y: 2, width: labelSize.width, height: height)
         
-        
-        
+       
     }
     
     override func prepareForReuse() {
@@ -71,9 +91,11 @@ class CommentTableViewCell: UITableViewCell {
         postImageView.image = nil
     }
     
-    public func configure(with viewModel: CommentCellViewModel){
-        label.text = viewModel.username + " commented to your challange"
-        profileImageView.sd_setImage(with: viewModel.profilePicturUrl, completed: nil)
+    public func configure(with viewModel: LikeCellViewModel){
+        self.viewModel = viewModel
+        label.text = viewModel.username + " liked your challange"
+        profileImageView.sd_setImage(with: viewModel.profilePictureUrl, completed: nil)
         postImageView.sd_setImage(with: viewModel.postUrl, completed: nil)
     }
+
 }

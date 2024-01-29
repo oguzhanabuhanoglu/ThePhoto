@@ -7,7 +7,7 @@
 
 import Foundation
 
-//encode edilen datayı [string : any] dictionary yapacak.firestore verilerini işlemek için.
+//encode edilen datayı [string : any] dictionary yapacak.firestore verilerini işlemek için. STRUCT TO JSON
 extension Encodable {
     func asDictionary() -> [String : Any]? {
         guard let data = try? JSONEncoder().encode(self) else {
@@ -18,6 +18,7 @@ extension Encodable {
     }
 }
 
+//JSON TO STRUCT
 extension Decodable {
     init?(with dictionary : [String : Any]){
         guard let data = try? JSONSerialization.data(withJSONObject: dictionary, options: .prettyPrinted) else {
