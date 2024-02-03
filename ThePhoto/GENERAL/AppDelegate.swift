@@ -19,6 +19,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         FirebaseApp.configure()
         
+        UIFont.familyNames.forEach({name in
+            for font_name in UIFont.fontNames(forFamilyName: name){
+                print("\n\(font_name)")
+            }
+        })
+        
         //add dummy notification for current user
         let id = NotificationsManager.newIdentifier()
         let model = TPNotification(identifier: id,
@@ -27,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                    username: "HakanKa",
                                    dateString: String.dateString(from: Date()) ?? "Now" ,
                                    postId: id,
-                                   postUrl: "https://iosacademy.io/assets/images/courses/swiftui.png")
+                                   postUrl: "https://iosacademy.io/assets/images/brand/icon.jpg")
         NotificationsManager.shared.create(notification: model, for: "oğuzhan")
         
         return true

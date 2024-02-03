@@ -15,6 +15,19 @@ public class DatabaseManager {
     let database = Firestore.firestore()
     
     
+    //get particular post for notifications
+    public func getNotificatedPost(with identifier: String, from username: String, completion: @escaping (Post?) -> Void){
+        let ref = database.collection("users").document(username).collection("posts").document(identifier)
+        ref.getDocument { snapshot, error in
+            guard let data = snapshot?.data(), error == nil else {
+                completion(nil)
+                return
+            }
+            completion(Post(with: data))
+        }
+        
+    }
+    
     public func getNotifications(completion: @escaping ([TPNotification]) -> Void){
         guard let username = UserDefaults.standard.string(forKey: "username") else {
             return
@@ -30,6 +43,7 @@ public class DatabaseManager {
         }
     }
     
+    
     public func insertNotification(identifier: String, data: [String:Any], for username: String) {
         guard let username = UserDefaults.standard.string(forKey: "username") else {
             return
@@ -37,6 +51,7 @@ public class DatabaseManager {
         let ref = database.collection("users").document(username).collection("notifications").document(identifier)
         ref.setData(data)
     }
+    
     
     public func searchByUsername(with usernamePrefix: String, completion: @escaping ([User]) -> Void){
         let ref = database.collection("users")
@@ -50,7 +65,6 @@ public class DatabaseManager {
         }
     }
 
-    
     
     public func createPost(newPost: Post, completion: @escaping (Bool) -> Void){
         guard let username = UserDefaults.standard.string(forKey: "username") else {

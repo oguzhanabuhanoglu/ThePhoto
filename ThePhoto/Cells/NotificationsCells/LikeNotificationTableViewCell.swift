@@ -35,6 +35,14 @@ class LikeNotificationTableViewCell: UITableViewCell {
         return label
     }()
     
+    private let dateLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 1
+        label.textColor = .secondaryLabel
+        label.font = UIFont(name: "Helvetica", size: 11)
+        return label
+    }()
+    
     private let postImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.masksToBounds = true
@@ -49,6 +57,7 @@ class LikeNotificationTableViewCell: UITableViewCell {
         addSubview(profileImageView)
         addSubview(label)
         addSubview(postImageView)
+        addSubview(dateLabel)
         
         postImageView.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapPost))
@@ -79,8 +88,15 @@ class LikeNotificationTableViewCell: UITableViewCell {
         let size2 = height - 6
         postImageView.frame = CGRect(x: widht - size2 - 2, y: 3, width: size2, height: size2)
     
+        let dateLabelSize = dateLabel.sizeThatFits(CGSize(width: widht - size - size2 - 9, height: height * 0.1))
+        
         let labelSize = label.sizeThatFits(CGSize(width: widht - size - size2 - 9, height: height))
-        label.frame = CGRect(x: widht * 0.52  - (widht * 0.7) / 2, y: 2, width: labelSize.width, height: height)
+        
+        label.frame = CGRect(x: widht * 0.52  - (widht * 0.7) / 2, y: 2, width: labelSize.width, height: height - dateLabelSize.height - 2)
+        
+        dateLabel.frame = CGRect(x: widht * 0.52  - (widht * 0.7) / 2, y: 3 + label.frame.height , width: dateLabelSize.width, height: dateLabelSize.height)
+        
+        
         
        
     }
@@ -89,6 +105,7 @@ class LikeNotificationTableViewCell: UITableViewCell {
         profileImageView.image = nil
         label.text = nil
         postImageView.image = nil
+        dateLabel.text = nil
     }
     
     public func configure(with viewModel: LikeCellViewModel){
@@ -96,6 +113,7 @@ class LikeNotificationTableViewCell: UITableViewCell {
         label.text = viewModel.username + " liked your challange"
         profileImageView.sd_setImage(with: viewModel.profilePictureUrl, completed: nil)
         postImageView.sd_setImage(with: viewModel.postUrl, completed: nil)
+        dateLabel.text = viewModel.date
     }
 
 }

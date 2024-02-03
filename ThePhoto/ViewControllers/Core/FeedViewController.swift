@@ -7,7 +7,7 @@
 
 import UIKit
 
-class FeedViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource{
+class FeedViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     
     private var collectionView: UICollectionView?
    
@@ -277,9 +277,9 @@ extension FeedViewController: FeedChallangeHeaderCollectionReusableViewDelegate,
         }
         
         func didTapCommentButton() {
-            let vc = PostViewController()
+           /* let vc = PostViewController(post: )
             vc.title = "Post"
-            navigationController?.pushViewController(vc, animated: true)
+            navigationController?.pushViewController(vc, animated: true)*/
         }
         
         func didTapLikeCount() {
@@ -297,9 +297,7 @@ extension FeedViewController: FeedChallangeHeaderCollectionReusableViewDelegate,
             let sectionHeight : CGFloat = 130 + view.frame.size.width
             let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { index, _ -> NSCollectionLayoutSection? in
                 
-                let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(50))
-                let layoutHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
-                
+             
                 //items
                 let posterItem = NSCollectionLayoutItem(
                     layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
@@ -336,14 +334,23 @@ extension FeedViewController: FeedChallangeHeaderCollectionReusableViewDelegate,
                                                                 captionItem,
                                                                 timesTampItem
                                                              ])
+              
+                
                 //section
                 let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 15, bottom: 10, trailing: 15)
-                if index == 0 {
-                    section.boundarySupplementaryItems = [layoutHeader]
-                }
-                return section
+                section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 7, trailing: 10)
+                    
+                // Boundary Supplementary Item olarak header'ı ekleme
+                let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(50))
+                let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: headerSize,
+                elementKind: UICollectionView.elementKindSectionHeader,
+                alignment: .top)
                 
+                section.boundarySupplementaryItems = [sectionHeader]
+                
+                return section
+                            
                 
             }))
             collectionView.backgroundColor = .secondarySystemBackground

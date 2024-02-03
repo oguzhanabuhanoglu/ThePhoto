@@ -75,14 +75,14 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
                 guard let postUrl = URL(string: model.postUrl ?? "") else {
                     return
                 }
-                viewModels.append(.like(viewModel: LikeCellViewModel(username: username, profilePictureUrl: profilePicture, postUrl: postUrl)))
+                viewModels.append(.like(viewModel: LikeCellViewModel(username: username, profilePictureUrl: profilePicture, postUrl: postUrl, date: model.dateString)))
             case .comment:
                 guard let postUrl = URL(string: model.postUrl ?? "") else {
                     return
                 }
-                viewModels.append(.comment(viewModel: CommentCellViewModel(username: username, profilePicturUrl: profilePicture, postUrl: postUrl)))
+                viewModels.append(.comment(viewModel: CommentCellViewModel(username: username, profilePicturUrl: profilePicture, postUrl: postUrl, date: model.dateString)))
             case .friendRequest:
-                viewModels.append(.firendRequest(viewModel: FriendRequestCellViewModel(username: username, profilePictureUrl: profilePicture)))
+                viewModels.append(.firendRequest(viewModel: FriendRequestCellViewModel(username: username, profilePictureUrl: profilePicture, date: model.dateString)))
             }
         }
         
@@ -97,7 +97,7 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
         
     }
     
-    private func createMockData(){
+    /*private func createMockData(){
         tableView.isHidden = false
         guard let postUrl = URL(string: "https://iosacademy.io/assets/images/courses/swiftui.png") else {
             return
@@ -108,13 +108,13 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
         }
         
         viewModels = [
-            .like(viewModel: LikeCellViewModel(username: "HakanKa", profilePictureUrl: iconUrl, postUrl: postUrl)),
-            .comment(viewModel: CommentCellViewModel(username: "ybasaran", profilePicturUrl: iconUrl, postUrl: postUrl)),
-            .firendRequest(viewModel: FriendRequestCellViewModel(username: "krcabtu", profilePictureUrl: iconUrl)),
+            .like(viewModel: LikeCellViewModel(username: "HakanKa", profilePictureUrl: iconUrl, postUrl: postUrl, date: "21 march")),
+            .comment(viewModel: CommentCellViewModel(username: "ybasaran", profilePicturUrl: iconUrl, postUrl: postUrl, date: "21 march")),
+            .firendRequest(viewModel: FriendRequestCellViewModel(username: "krcabtu", profilePictureUrl: iconUrl, date: "21 march")),
         ]
         
         tableView.reloadData()
-    }
+    }*/
 
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -149,11 +149,24 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
         
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cellType = viewModels[indexPath.row]
+        let username: String
+        switch cellType {
+        case.like(let viewModel):
+            username = viewModel.username
+        case.comment(let viewModel):
+            username = viewModel.username
+        case.firendRequest(let viewModel):
+            username = viewModel.username
+        }
+    }
+    
     
     
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return view.frame.height * 0.07
+        return view.frame.height * 0.065
     }
 
 
@@ -162,6 +175,7 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
 //ACTİONS
 //friends request eklemedim.pusudayım
 extension NotificationsViewController: LikeNotificationTableViewCellDelegate, CommentNotificationTableViewCellDelegate {
+    
     func likeNotificationTableViewCell(_ cell: LikeNotificationTableViewCell, didTapPostWith viewModel: LikeCellViewModel) {
         //like alan postu açmamız lazım.viewModeldan username alıp databaseden username e göre postu cekmemiz lazım.
         guard let index = viewModels.firstIndex(where: {
@@ -177,13 +191,13 @@ extension NotificationsViewController: LikeNotificationTableViewCellDelegate, Co
         
         openPost(with: index, username: viewModel.username)
         
-        // find post by id from particular
+       
         
     }
     
     func commentNotificationTableViewCell(_ cell: CommentNotificationTableViewCell, didTapPostWith viewModel: CommentCellViewModel) {
         guard let index = viewModels.firstIndex(where: {
-            switch $0{
+            switch $0 {
             case .like, .firendRequest:
                 return false
             case .comment(let current):
@@ -207,6 +221,23 @@ extension NotificationsViewController: LikeNotificationTableViewCellDelegate, Co
         let username = username
         guard let postID = model.postId else {
             return
+        }
+        
+        //get post from database to show on post vc with identifier
+        DatabaseManager.shared.getNotificatedPost(with: postID, from: username) { [weak self] post in
+            DispatchQueue.main.async {
+                guard let post = post else {
+                    let alert = UIAlertController(title: "Oops", message: "We are unable to open this post!", preferredStyle: UIAlertController.Style.alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+                    self?.present(alert, animated: true)
+                    return
+                }
+                
+                let vc = PostViewController(post: post)
+                self?.navigationController?.pushViewController(vc, animated: true)
+                
+            }
+            
         }
     }
     
