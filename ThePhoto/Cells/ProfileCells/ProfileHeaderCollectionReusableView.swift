@@ -7,33 +7,40 @@
 
 import UIKit
 
+protocol ProfileHeaderCollectionReusableViewDelegate : AnyObject {
+    func profileHeaderReusableViewDidTapProfilePicture(_ profileHeader: ProfileHeaderCollectionReusableView)
+    func profileHeaderReusableViewDidTapEditProfile(_ profileHeader: ProfileHeaderCollectionReusableView)
+    func profileHeaderReusableViewDidTapAddFriend(_ profileHeader: ProfileHeaderCollectionReusableView)
+    func profileHeaderReusableViewDidTapRemoveFriend(_ profileHeader: ProfileHeaderCollectionReusableView)
+}
+
 class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         
     static let identifier = "ProfileHeaderCollectionReusableView"
+    
+    weak var delegate : ProfileHeaderCollectionReusableViewDelegate?
+    
+    private var action = profileButtonType.edit
     
     private let profileImageView : UIImageView = {
         let image = UIImageView()
         image.contentMode = .scaleAspectFill
         image.layer.masksToBounds = true
         image.clipsToBounds = true
-        //image.layer.borderColor = UIColor.secondaryLabel.cgColor
-        //image.layer.borderWidth = 1
+        image.isUserInteractionEnabled = true
         image.image = UIImage(named: "sisifos")
         return image
     }()
     
-    private let challangeScoreLabel : UILabel = {
-        let label = UILabel()
-        label.text = "2245"
-        label.textColor = .label
-        label.textAlignment = .center
-        label.numberOfLines = 1
-        label.backgroundColor = .systemBackground
-        label.layer.borderColor = UIColor.secondaryLabel.cgColor
-        label.layer.borderWidth = 0.7
-        label.layer.cornerRadius = 10
-        label.font = .systemFont(ofSize: 12)
-        return label
+    private let challangeScoreButton : UIButton = {
+        let button = UIButton()
+        button.setTitle("2245", for: UIControl.State.normal)
+        button.setTitleColor(.label, for: UIControl.State.normal)
+        button.backgroundColor = .systemBackground
+        button.layer.borderColor = UIColor.secondaryLabel.cgColor
+        button.layer.borderWidth = 0.7
+        button.layer.cornerRadius = 10
+        return button
     }()
     
     private let bioLabel : UILabel = {
@@ -59,7 +66,8 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
     private let dailyImageView : UIImageView = {
         let image = UIImageView()
         image.contentMode = .scaleAspectFill
-        image.image = UIImage(named: "pp")
+        image.backgroundColor = . secondarySystemBackground
+        //image.image = UIImage(named: "pp")
         image.layer.masksToBounds = true
         image.layer.cornerRadius = 10
         image.layer.borderWidth = 1
@@ -69,23 +77,19 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
     
     private let actionButton : UIButton = {
         let button = UIButton()
-        button.backgroundColor = .secondarySystemBackground
-        button.setTitle("Edit Profile", for: UIControl.State.normal)
-        button.setTitleColor(.white, for: UIControl.State.normal)
         return button
     }()
     
-
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .systemBackground
         addSubview(profileImageView)
-        addSubview(challangeScoreLabel)
+        addSubview(challangeScoreButton)
         addSubview(bioLabel)
-//        //addSubview(dailyChallangeLabel)
         addSubview(dailyImageView)
         addSubview(actionButton)
+        addAction()
     }
     
     required init?(coder: NSCoder) {
@@ -101,29 +105,84 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         profileImageView.frame = CGRect(x: 5, y: 10, width: size, height: size)
         profileImageView.layer.cornerRadius = size / 2
     
-        challangeScoreLabel.frame = CGRect(x: 10, y: size + 20, width: widht / 5, height: 20)
+        challangeScoreButton.frame = CGRect(x: 10, y: size + 20, width: widht / 5, height: 20)
         
         bioLabel.sizeToFit()
         let labelHeight = bioLabel.frame.size.height
         bioLabel.frame = CGRect(x: 5 , y: size + 50, width: widht * 0.5, height: labelHeight)
         
-        dailyImageView.frame = CGRect(x: widht * 0.75 - (widht * 0.4) / 2, y: 5, width: widht * 0.45, height: widht * 0.45)
+        dailyImageView.frame = CGRect(x: widht * 0.75  - (widht * 0.45) / 2, y: 5, width: widht * 0.45, height: widht * 0.54)
         
-        dailyChallangeLabel.frame = CGRect(x: widht * 0.5, y: 10 + (widht * 0.4), width: widht * 0.5, height: height * 0.12)
-        
-        actionButton.frame = CGRect(x: 5, y: height * 0.85 , width: widht - 10, height: height * 0.12)
-        
-        //size + labelHeight + 70
+        actionButton.frame = CGRect(x: 5, y: height * 0.80 , width: (widht / 2) - 10, height: height * 0.12)
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        //profileImageView.image = nil
+        profileImageView.image = nil
+        bioLabel.text = nil
     }
     
-    public func configure(with viewModel: ProfileHeaderViewModel){
+    private func addAction() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapProfilePicture))
+        profileImageView.addGestureRecognizer(tap)
+        actionButton.addTarget(self, action: #selector(didTapAcitonButton), for: .touchUpInside)
         
+    }
+    
+    @objc func didTapProfilePicture() {
+        delegate?.profileHeaderReusableViewDidTapProfilePicture(self)
+    }
+    
+    @objc func didTapAcitonButton() {
+        switch action {
+        case.edit:
+            delegate?.profileHeaderReusableViewDidTapEditProfile(self)
+        case.addFriend(let isFriend):
+            if isFriend {
+                //remove friend
+                delegate?.profileHeaderReusableViewDidTapRemoveFriend(self)
+            }else{
+                //add friend
+                delegate?.profileHeaderReusableViewDidTapAddFriend(self)
+            }
+        }
+    }
+    
+    
+    public func configure(with viewModel: ProfileHeaderViewModel){
+        profileImageView.sd_setImage(with: viewModel.profilePictureUrl, completed: nil)
+        
+        var text = ""
+        if let name = viewModel.name {
+            text = name + "\n"
+        }
+        text += viewModel.bio ?? "welcome"
+        bioLabel.text = text
+        
+        
+        dailyImageView.sd_setImage(with: viewModel.dailyImage, completed: nil)
+        challangeScoreButton.setTitle("\(viewModel.challangeScore)", for: .normal)
+        
+        // button type
+        switch viewModel.buttonType {
+        case .edit:
+            actionButton.backgroundColor = .secondarySystemBackground
+            actionButton.setTitle("Edit Profile", for: UIControl.State.normal)
+            actionButton.setTitleColor(.label, for: UIControl.State.normal)
+            
+        case .addFriend(let isFriend):
+            actionButton.setTitleColor(.label, for: UIControl.State.normal)
+            
+            if isFriend {
+                actionButton.setTitle("Remove Friendship", for: UIControl.State.normal)
+                actionButton.backgroundColor = .systemGray4
+            }else{
+                actionButton.setTitle("Add Friend", for: UIControl.State.normal)
+                actionButton.backgroundColor = .systemBlue
+            }
+        }
     }
     
     
 }
+

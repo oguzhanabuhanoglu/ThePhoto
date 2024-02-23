@@ -8,6 +8,8 @@
 import UIKit
 
 class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource {
+
+    
     
     private var collectionView: UICollectionView?
     
@@ -34,6 +36,7 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
         
         configureNavBar()
         configureCollectionView()
+        fetchProfileInfo()
     }
     
     override func viewDidLayoutSubviews() {
@@ -51,7 +54,6 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
         }
     }
     
-    
     @objc func didTapSettingsButton(){
         let settingsVC = SettingsViewController()
         settingsVC.title = "Settings"
@@ -64,12 +66,21 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
         navigationController?.pushViewController(vc, animated: true)
     }
     
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard kind == UICollectionView.elementKindSectionHeader,
-              let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: ProfileHeaderCollectionReusableView.identifier, for: indexPath) as? ProfileHeaderCollectionReusableView else {
-            fatalError()
+    func fetchProfileInfo(){
+        //profile picture url
+        StorageManager.shared.profilePictureURL(for: user.username) { url in
+            
         }
-        return header
+        
+        //name, bio, challange score
+        
+        //last image user shared
+        
+        //if profile is not for current user
+        if !isCurrentUser {
+            //get friendship state
+        }
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -83,11 +94,44 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
         cell.configure(debug: "sisifos")
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard kind == UICollectionView.elementKindSectionHeader,
+              let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: ProfileHeaderCollectionReusableView.identifier, for: indexPath) as? ProfileHeaderCollectionReusableView else {
+            return UICollectionReusableView()
+        }
+        let viewModel = ProfileHeaderViewModel(profilePictureUrl: URL(string: "https://iosacademy.io/assets/images/brand/icon.jpg"),
+                                               name: "Oğuzhan Abuhanoğlu",
+                                               bio: "selamunaleykum",
+                                               challangeScore: 24550,
+                                               dailyImage: nil,
+                                               buttonType: self.isCurrentUser ? .edit : .addFriend(isFriend: false))
+        header.configure(with: viewModel)
+        header.delegate = self
+        return header
+    }
 
 }
 
-extension ProfileViewController{
+extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
+    func profileHeaderReusableViewDidTapProfilePicture(_ profileHeader: ProfileHeaderCollectionReusableView) {
+        
+    }
     
+    func profileHeaderReusableViewDidTapEditProfile(_ profileHeader: ProfileHeaderCollectionReusableView) {
+        
+    }
+    
+    func profileHeaderReusableViewDidTapAddFriend(_ profileHeader: ProfileHeaderCollectionReusableView) {
+        
+    }
+    
+    func profileHeaderReusableViewDidTapRemoveFriend(_ profileHeader: ProfileHeaderCollectionReusableView) {
+
+    }
+}
+
+extension ProfileViewController{
     func configureCollectionView() {
         
        var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { index, _ -> NSCollectionLayoutSection? in
@@ -103,7 +147,7 @@ extension ProfileViewController{
            
            let section = NSCollectionLayoutSection(group: group)
            section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem(
-            layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.66)),
+            layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.60)),
             elementKind: UICollectionView.elementKindSectionHeader,
             alignment: .top)]
            return section

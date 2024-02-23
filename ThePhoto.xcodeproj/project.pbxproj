@@ -301,9 +301,9 @@
 		BFE2A46C2B49E1AC00EABD48 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				BF3F3B2E2B6D35C4000973FF /* ProfileHeaderViewModel.swift */,
 				BF3F3B222B63C365000973FF /* NotificationViewModels.swift */,
 				BF3F3B242B63C370000973FF /* FeedViewModels */,
-				BF3F3B2E2B6D35C4000973FF /* ProfileHeaderViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
