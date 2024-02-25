@@ -190,10 +190,8 @@ extension NotificationsViewController: LikeNotificationTableViewCellDelegate, Co
         }
         
         openPost(with: index, username: viewModel.username)
-        
-       
-        
     }
+    
     
     func commentNotificationTableViewCell(_ cell: CommentNotificationTableViewCell, didTapPostWith viewModel: CommentCellViewModel) {
         guard let index = viewModels.firstIndex(where: {

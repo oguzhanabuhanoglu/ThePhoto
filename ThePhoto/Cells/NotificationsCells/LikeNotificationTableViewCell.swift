@@ -96,9 +96,6 @@ class LikeNotificationTableViewCell: UITableViewCell {
         
         dateLabel.frame = CGRect(x: widht * 0.52  - (widht * 0.7) / 2, y: 3 + label.frame.height , width: dateLabelSize.width, height: dateLabelSize.height)
         
-        
-        
-       
     }
     
     override func prepareForReuse() {

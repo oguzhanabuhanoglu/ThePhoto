@@ -11,3 +11,9 @@ public struct User : Codable{
     let username: String
     let email: String
 }
+
+public struct UserInfo: Codable {
+    let name: String
+    let bio: String
+    let score: Int
+}

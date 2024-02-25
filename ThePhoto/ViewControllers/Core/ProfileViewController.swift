@@ -8,12 +8,12 @@
 import UIKit
 
 class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource {
-
-    
     
     private var collectionView: UICollectionView?
     
     private let user: User
+    
+    private var headerViewModel: ProfileHeaderViewModel?
     
     private var isCurrentUser : Bool {
         return user.username.lowercased() == UserDefaults.standard.string(forKey: "username")?.lowercased() ?? ""
@@ -67,20 +67,55 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
     }
     
     func fetchProfileInfo(){
+        var profilePictureUrl: URL?
+        var buttonType: profileButtonType = .edit
+        var name: String?
+        var bio: String?
+        var score: Int?
+        
+        let group = DispatchGroup()
+        
         //profile picture url
+        group.enter()
         StorageManager.shared.profilePictureURL(for: user.username) { url in
-            
+            defer {
+                group.leave()
+            }
+            profilePictureUrl = url
         }
         
         //name, bio, challange score
+        group.enter()
+        DatabaseManager.shared.getUserInfo(username: user.username) { userInfo in
+            defer{
+                group.leave()
+            }
+            name = userInfo?.name
+            bio = userInfo?.bio
+            score = userInfo?.score
+            
+        }
         
         //last image user shared
         
         //if profile is not for current user
         if !isCurrentUser {
             //get friendship state
+            //i need to get informationa about is current user following
+            buttonType = .addFriend(isFriend: true)
         }
         
+        group.notify(queue: .main) {
+            self.headerViewModel = ProfileHeaderViewModel(profilePictureUrl: profilePictureUrl,
+                                                   name: name,
+                                                   bio: bio,
+                                                   challangeScore: score ?? 0,
+                                                   dailyImage: nil,
+                                                   buttonType: buttonType)
+            
+            self.collectionView?.reloadData()
+        }
+
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -100,14 +135,10 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
               let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: ProfileHeaderCollectionReusableView.identifier, for: indexPath) as? ProfileHeaderCollectionReusableView else {
             return UICollectionReusableView()
         }
-        let viewModel = ProfileHeaderViewModel(profilePictureUrl: URL(string: "https://iosacademy.io/assets/images/brand/icon.jpg"),
-                                               name: "Oğuzhan Abuhanoğlu",
-                                               bio: "selamunaleykum",
-                                               challangeScore: 24550,
-                                               dailyImage: nil,
-                                               buttonType: self.isCurrentUser ? .edit : .addFriend(isFriend: false))
-        header.configure(with: viewModel)
-        header.delegate = self
+        if let viewModel = headerViewModel {
+            header.configure(with: viewModel)
+            header.delegate = self
+        }
         return header
     }
 
@@ -119,7 +150,10 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
     }
     
     func profileHeaderReusableViewDidTapEditProfile(_ profileHeader: ProfileHeaderCollectionReusableView) {
-        
+        let vc = EditProfileViewController()
+        let navVC = UINavigationController(rootViewController: vc)
+        navVC.modalPresentationStyle = .fullScreen
+        present(navVC ,animated: true)
     }
     
     func profileHeaderReusableViewDidTapAddFriend(_ profileHeader: ProfileHeaderCollectionReusableView) {
