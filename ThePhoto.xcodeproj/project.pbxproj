@@ -58,6 +58,7 @@
 		BFE5D26B2B4B416400509302 /* PostedDateCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE5D26A2B4B416400509302 /* PostedDateCollectionViewCell.swift */; };
 		BFE5D26D2B4C1AD100509302 /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE5D26C2B4C1AD000509302 /* PostViewController.swift */; };
 		BFE5D26F2B4C5CAE00509302 /* FeedChallangeHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE5D26E2B4C5CAE00509302 /* FeedChallangeHeaderCollectionReusableView.swift */; };
+		BFE755FA2B8B738D00AA23EB /* EditProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE755F92B8B738D00AA23EB /* EditProfileTableViewCell.swift */; };
 		BFEB97A72B5178A800F0107B /* PostShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEB97A62B5178A800F0107B /* PostShareViewController.swift */; };
 		BFEB97A92B51937F00F0107B /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEB97A82B51937F00F0107B /* Post.swift */; };
 		EA7F7FEB5C2F5F199E4A25BA /* Pods_ThePhoto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91CC3445AB4F73E1B0474F7E /* Pods_ThePhoto.framework */; };
@@ -142,6 +143,7 @@
 		BFE5D26A2B4B416400509302 /* PostedDateCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostedDateCollectionViewCell.swift; sourceTree = "<group>"; };
 		BFE5D26C2B4C1AD000509302 /* PostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewController.swift; sourceTree = "<group>"; };
 		BFE5D26E2B4C5CAE00509302 /* FeedChallangeHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedChallangeHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
+		BFE755F92B8B738D00AA23EB /* EditProfileTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileTableViewCell.swift; sourceTree = "<group>"; };
 		BFEB97A62B5178A800F0107B /* PostShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostShareViewController.swift; sourceTree = "<group>"; };
 		BFEB97A82B51937F00F0107B /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		FDD8EC46A987BC8BF75A94F1 /* Pods-ThePhotoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThePhotoTests.debug.xcconfig"; path = "Target Support Files/Pods-ThePhotoTests/Pods-ThePhotoTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -215,6 +217,7 @@
 			children = (
 				BF3F3B292B6D2A06000973FF /* PhotoCollectionViewCell.swift */,
 				BF3F3B2C2B6D3558000973FF /* ProfileHeaderCollectionReusableView.swift */,
+				BFE755F92B8B738D00AA23EB /* EditProfileTableViewCell.swift */,
 			);
 			path = ProfileCells;
 			sourceTree = "<group>";
@@ -649,6 +652,7 @@
 				BFE2A4712B49E40F00EABD48 /* ProfileViewController.swift in Sources */,
 				BFE5D2692B4B415000509302 /* PostCaptionCollectionViewCell.swift in Sources */,
 				BFE5D2632B4B411400509302 /* PosterCollectionViewCell.swift in Sources */,
+				BFE755FA2B8B738D00AA23EB /* EditProfileTableViewCell.swift in Sources */,
 				BF3F3B232B63C365000973FF /* NotificationViewModels.swift in Sources */,
 				BFEB97A92B51937F00F0107B /* Post.swift in Sources */,
 				BFE5D25F2B4B3A1B00509302 /* PostDatetimeCollectionViewCellViewModel.swift in Sources */,
