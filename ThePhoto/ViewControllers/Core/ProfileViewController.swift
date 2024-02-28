@@ -69,7 +69,7 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
     func fetchProfileInfo(){
         var profilePictureUrl: URL?
         var buttonType: profileButtonType = .edit
-        var name: String?
+        var name: String = ""
         var bio: String?
         var score: Int?
         
@@ -90,9 +90,16 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
             defer{
                 group.leave()
             }
-            name = userInfo?.name
-            bio = userInfo?.bio
-            score = userInfo?.score
+            if let userInfo = userInfo {
+                    name = userInfo.name
+                    bio = userInfo.bio
+                    score = userInfo.score
+                } else {
+                    name = ""
+                    bio = nil
+                    score = nil
+                }
+
             
         }
         

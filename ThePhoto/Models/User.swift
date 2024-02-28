@@ -13,7 +13,8 @@ public struct User : Codable{
 }
 
 public struct UserInfo: Codable {
+    let username: String 
     let name: String
-    let bio: String
+    let bio: String?
     let score: Int?
 }

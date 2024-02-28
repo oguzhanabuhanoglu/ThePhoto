@@ -59,8 +59,8 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     @objc func didTapSave(){
-        let name = models.
-        let newInfo = UserInfo(name: "", bio: "", score: nil)
+        //let name = models.
+        let newInfo = UserInfo(username: "", name: "", bio: "", score: nil)
         DatabaseManager.shared.setUserInfo(userInfo: newInfo) { [weak self] success in
             DispatchQueue.main.async {
                 if success {

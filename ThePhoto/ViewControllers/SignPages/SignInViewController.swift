@@ -167,12 +167,14 @@ class SignInViewController: UIViewController{
     
     @objc private func didTaptoSignupButton() {
         
-        let signUpVC = SignUpViewController()
-        signUpVC.title = "Create User"
-        signUpVC.modalPresentationStyle = .fullScreen
-        present(UINavigationController(rootViewController: signUpVC), animated: true)
-        
+        let nameVC = NameVC()
+        nameVC.title = "Create User"
+        let navVC = UINavigationController(rootViewController: nameVC)
+        navVC.modalPresentationStyle = .fullScreen
+        present(navVC ,animated: true)
     }
+        
+    
     
     @objc private func didTapTermsButton() {
         //en son
