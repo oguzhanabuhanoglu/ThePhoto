@@ -12,8 +12,8 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
     private var collectionView: UICollectionView?
     
     private let user: User
-    
     private var headerViewModel: ProfileHeaderViewModel?
+    private var posts: [Post] = []
     
     private var isCurrentUser : Bool {
         return user.username.lowercased() == UserDefaults.standard.string(forKey: "username")?.lowercased() ?? ""
@@ -67,6 +67,9 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
     }
     
     func fetchProfileInfo(){
+        guard let username = UserDefaults.standard.string(forKey: "username") else {
+            return
+        }
         var profilePictureUrl: URL?
         var buttonType: profileButtonType = .edit
         var name: String = ""
@@ -75,6 +78,23 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
         
         let group = DispatchGroup()
         
+        //DATA FOR COLLECTİON POSTS
+        group.enter()
+        DatabaseManager.shared.getPosts(for: username) { result in
+            defer {
+                group.leave()
+            }
+            
+            switch result {
+            case .success(let posts):
+                self.posts = posts
+            case .failure:
+                break
+            }
+        }
+        
+        
+        //DATA FOR HEADER
         //profile picture url
         group.enter()
         StorageManager.shared.profilePictureURL(for: user.username) { url in
@@ -99,8 +119,6 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
                     bio = nil
                     score = nil
                 }
-
-            
         }
         
         //last image user shared
@@ -125,15 +143,16 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
 
     }
     
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 30
+        return posts.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCollectionViewCell.identifier, for: indexPath) as? PhotoCollectionViewCell else {
             fatalError()
         }
-        cell.configure(debug: "sisifos")
+        cell.configure(with: posts[indexPath.row])
         return cell
     }
     
@@ -149,6 +168,11 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
         return header
     }
 
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let post = posts[indexPath.row]
+        let vc = PostViewController(post: post)
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
 extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
@@ -178,7 +202,7 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
 extension ProfileViewController{
     func configureCollectionView() {
         
-       var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { index, _ -> NSCollectionLayoutSection? in
+        var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { index, _ -> NSCollectionLayoutSection? in
             
            let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
            

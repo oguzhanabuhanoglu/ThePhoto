@@ -43,8 +43,10 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
         
         guard let username = UserDefaults.standard.string(forKey: "username") else { return }
         DatabaseManager.shared.getUserInfo(username: username) { [weak self] info in
-            if let info = info {
-                
+            DispatchQueue.main.async {
+                if let info = info {
+                    
+                }
             }
         }
     }
