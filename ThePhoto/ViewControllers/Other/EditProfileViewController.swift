@@ -93,7 +93,6 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
         profilePhotoButton.tintColor = .label
         profilePhotoButton.addTarget(self, action: #selector(didTapProfilePhotoButton), for: UIControl.Event.touchUpInside)
         header.addSubview(profilePhotoButton)
-        
         return header
     }
     

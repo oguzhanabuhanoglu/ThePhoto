@@ -38,6 +38,19 @@ class TabBarViewController: UITabBarController {
         nav2.navigationBar.tintColor = .label
         nav3.navigationBar.tintColor = .label
 
+        if #available(iOS 14.0, *) {
+            nav1.navigationItem.backButtonDisplayMode = .minimal
+            nav2.navigationItem.backButtonDisplayMode = .minimal
+            nav3.navigationItem.backButtonDisplayMode = .minimal
+            search.navigationItem.backButtonDisplayMode = .minimal
+            feed.navigationItem.backButtonDisplayMode = .minimal
+            profile.navigationItem.backButtonDisplayMode = .minimal
+        } else {
+            // Fallback on earlier versions
+            nav1.navigationItem.backButtonTitle = ""
+            nav2.navigationItem.backButtonTitle = ""
+            nav3.navigationItem.backButtonTitle = ""
+        }
         
         //DEFİNE TAB İTEMS
         nav1.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "magnifyingglass"), tag: 1)

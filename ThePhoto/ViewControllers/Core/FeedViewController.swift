@@ -21,7 +21,7 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "heart"), style: UIBarButtonItem.Style.done, target: self, action: #selector(didTapNotifications))
         configurationCollectionView()
-        fetchPost()
+        //fetchPost()
         
         //let navigationBarHeight = navigationController?.navigationBar.frame.height ?? 0
         //FeedChallangeHeaderView().delegate = self
@@ -29,6 +29,11 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
         
        
         
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchPost()
     }
     
     override func viewDidLayoutSubviews() {
@@ -52,6 +57,7 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
             DispatchQueue.main.async {
                 switch result {
                 case.success(var posts):
+                    self?.viewModels.removeAll()
                     let group = DispatchGroup()
                     
                     posts.forEach { model in
@@ -130,11 +136,16 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
         
         //COLLECTION VIEW
         func numberOfSections(in collectionView: UICollectionView) -> Int {
-            return viewModels.count
+            return viewModels.count == 0 ? 1 : viewModels.count
         }
         
         func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-            return viewModels[section].count
+            if viewModels.count > 0 {
+                return viewModels[section].count
+            } else {
+                return 0
+            }
+            
         }
         
         func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -346,8 +357,9 @@ extension FeedViewController: FeedChallangeHeaderCollectionReusableViewDelegate,
                 layoutSize: headerSize,
                 elementKind: UICollectionView.elementKindSectionHeader,
                 alignment: .top)
-                
-                section.boundarySupplementaryItems = [sectionHeader]
+                if index == 0 {
+                    section.boundarySupplementaryItems = [sectionHeader]
+                }
                 
                 return section
                             

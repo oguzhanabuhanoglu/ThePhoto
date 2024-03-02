@@ -133,21 +133,8 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         delegate?.profileHeaderReusableViewDidTapProfilePicture(self)
     }
     
-    @objc func didTapAcitonButton() {
-        switch action {
-        case.edit:
-            delegate?.profileHeaderReusableViewDidTapEditProfile(self)
-        case.addFriend(let isFriend):
-            if isFriend {
-                //remove friend
-                delegate?.profileHeaderReusableViewDidTapRemoveFriend(self)
-            }else{
-                //add friend
-                delegate?.profileHeaderReusableViewDidTapAddFriend(self)
-            }
-        }
-    }
     
+    private var isFriend = false
     
     public func configure(with viewModel: ProfileHeaderViewModel){
         profileImageView.sd_setImage(with: viewModel.profilePictureUrl, completed: nil)
@@ -171,15 +158,39 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
             actionButton.setTitleColor(.label, for: UIControl.State.normal)
             
         case .addFriend(let isFriend):
+            self.isFriend = isFriend
             actionButton.setTitleColor(.label, for: UIControl.State.normal)
-            
-            if isFriend {
-                actionButton.setTitle("Remove Friendship", for: UIControl.State.normal)
-                actionButton.backgroundColor = .systemGray4
+            updateRelationshipButton()
+        }
+    }
+    
+    
+    @objc func didTapAcitonButton() {
+        switch action {
+        case.edit:
+            delegate?.profileHeaderReusableViewDidTapEditProfile(self)
+        case.addFriend:
+            if self.isFriend {
+                //remove friend
+                delegate?.profileHeaderReusableViewDidTapRemoveFriend(self)
             }else{
-                actionButton.setTitle("Add Friend", for: UIControl.State.normal)
-                actionButton.backgroundColor = .systemBlue
+                //add friend
+                delegate?.profileHeaderReusableViewDidTapAddFriend(self)
             }
+            
+            self.isFriend = !isFriend
+            updateRelationshipButton()
+        }
+    }
+    
+    
+    func updateRelationshipButton() {
+        if isFriend {
+            actionButton.setTitle("Remove Friendship", for: UIControl.State.normal)
+            actionButton.backgroundColor = .systemGray4
+        }else{
+            actionButton.setTitle("Add Friend", for: UIControl.State.normal)
+            actionButton.backgroundColor = .systemBlue
         }
     }
     
