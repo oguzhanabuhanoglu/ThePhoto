@@ -177,14 +177,16 @@ public class DatabaseManager {
             // push notifitaciton to the target user and its gonna be friendRequest notification
             
             //that code just for testing
-            currentUserFriends.addDocument(data: ["valid" : "1"])
-            targetUserFriends.addDocument(data: ["valid" : "1"])
-            break
+            currentUserFriends.document(targetUsername).setData(["valid" : "1"])
+            targetUserFriends.document(currentUsername).setData(["valid" : "1"])
+
+            completion(true)
         case .removeFriend:
             // remove targetUser from currentUser friendList on database
             currentUserFriends.document(targetUsername).delete()
             // remove currentUser from targetUser friendList on database
             targetUserFriends.document(currentUsername).delete()
+            completion(true)
         }
     }
     

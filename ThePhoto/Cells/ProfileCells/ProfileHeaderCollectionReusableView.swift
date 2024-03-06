@@ -176,10 +176,11 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         case.addFriend:
             if self.isFriend {
                 //add friend
-                delegate?.profileHeaderReusableViewDidTapAddFriend(self)
+                delegate?.profileHeaderReusableViewDidTapRemoveFriend(self)
 
             }else{
-                delegate?.profileHeaderReusableViewDidTapRemoveFriend(self)
+                delegate?.profileHeaderReusableViewDidTapAddFriend(self)
+                
             }
             
             self.isFriend = !isFriend

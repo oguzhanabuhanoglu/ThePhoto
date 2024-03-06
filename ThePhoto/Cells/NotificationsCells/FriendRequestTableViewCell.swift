@@ -7,17 +7,17 @@
 
 import UIKit
 
-protocol FriendRequestNotificationTableViewCellDelegate: AnyObject {
+/*protocol FriendRequestNotificationTableViewCellDelegate: AnyObject {
     func FriendRequestNotificationTableViewCell(_ cell: FriendRequestTableViewCell, didTapAcceptButton)
-}
+}*/
 
 class FriendRequestTableViewCell: UITableViewCell {
 
     static let identifier = "FriendRequestTableViewCell"
     
-    weak var delegate: 
+   // weak var delegate:
     
-    private var viewModel: FriendRequestCellViewModel
+    //private var viewModel: FriendRequestCellViewModel
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -42,8 +42,6 @@ class FriendRequestTableViewCell: UITableViewCell {
         return label
     }()
     
-    
-    
     private let acceptButton : UIButton = {
         let button = UIButton()
         button.setBackgroundImage(UIImage(systemName: "checkmark.circle"), for: UIControl.State.normal)
@@ -59,7 +57,6 @@ class FriendRequestTableViewCell: UITableViewCell {
         return button
     }()
     
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.backgroundColor = .systemBackground
@@ -73,6 +70,8 @@ class FriendRequestTableViewCell: UITableViewCell {
         declineButton.addTarget(self, action: #selector(didTapDeclineButton), for: UIControl.Event.touchUpInside)
         acceptButton.addTarget(self, action: #selector(didTapAcceptButton), for: UIControl.Event.touchUpInside)
     }
+    
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

@@ -140,9 +140,9 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
                 defer{
                     group.leave()
                 }
+                print(isFollowing)
                 buttonType = .addFriend(isFriend: isFollowing)
             }
-            buttonType = .addFriend(isFriend: false)
         }
         
         group.notify(queue: .main) {
@@ -203,28 +203,33 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
         let navVC = UINavigationController(rootViewController: vc)
         navVC.modalPresentationStyle = .fullScreen
         present(navVC ,animated: true)
+        
     }
     
     func profileHeaderReusableViewDidTapAddFriend(_ profileHeader: ProfileHeaderCollectionReusableView) {
-        DatabaseManager.shared.updateRelationship(state: DatabaseManager.RelationshipState.addFriend, for: user.username) { succes in
+        DatabaseManager.shared.updateRelationship(state: DatabaseManager.RelationshipState.addFriend, for: user.username)  { [weak self] succes in
             if !succes {
                 print("failed to add friend")
                 DispatchQueue.main.async {
-                    self.collectionView?.reloadData()
+                    self?.collectionView?.reloadData()
                 }
             }
+            
         }
+        
     }
     
     func profileHeaderReusableViewDidTapRemoveFriend(_ profileHeader: ProfileHeaderCollectionReusableView) {
-        DatabaseManager.shared.updateRelationship(state: DatabaseManager.RelationshipState.removeFriend, for: user.username) { succes in
+        DatabaseManager.shared.updateRelationship(state: DatabaseManager.RelationshipState.removeFriend, for: user.username) { [weak self] succes in
             if !succes {
                 print("failed to remove friend")
                 DispatchQueue.main.async {
-                    self.collectionView?.reloadData()
+                    self?.collectionView?.reloadData()
                 }
             }
+            
         }
+        
     }
     
     
