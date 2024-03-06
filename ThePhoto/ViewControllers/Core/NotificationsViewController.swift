@@ -28,6 +28,7 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
     }()
     
     private var viewModels : [NotificationCellTypes] = []
+    //to override model which notifications i fetched from database 
     private var models: [TPNotification] = []
     
     override func viewDidLoad() {
@@ -76,11 +77,13 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
                     return
                 }
                 viewModels.append(.like(viewModel: LikeCellViewModel(username: username, profilePictureUrl: profilePicture, postUrl: postUrl, date: model.dateString)))
+                
             case .comment:
                 guard let postUrl = URL(string: model.postUrl ?? "") else {
                     return
                 }
                 viewModels.append(.comment(viewModel: CommentCellViewModel(username: username, profilePicturUrl: profilePicture, postUrl: postUrl, date: model.dateString)))
+                
             case .friendRequest:
                 viewModels.append(.firendRequest(viewModel: FriendRequestCellViewModel(username: username, profilePictureUrl: profilePicture, date: model.dateString)))
             }
@@ -159,6 +162,17 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
             username = viewModel.username
         case.firendRequest(let viewModel):
             username = viewModel.username
+        }
+        
+        DatabaseManager.shared.findUser(with: username) { [weak self] user in
+            guard let user = user else {
+                return
+            }
+            DispatchQueue.main.async {
+                let vc = ProfileViewController(user: user)
+                self?.navigationController?.pushViewController(vc, animated: true)
+            }
+
         }
     }
     

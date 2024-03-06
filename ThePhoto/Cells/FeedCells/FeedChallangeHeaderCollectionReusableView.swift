@@ -31,19 +31,23 @@ class FeedChallangeHeaderCollectionReusableView: UICollectionReusableView {
         return label
     }()
     
+    private let label : UILabel = {
+        let label = UILabel()
+        label.backgroundColor = .secondarySystemBackground
+        return label
+    }()
+    
     private let cameraButton : UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "camera.badge.clock"), for: UIControl.State.normal)
         button.backgroundColor = .systemBackground
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.secondaryLabel.cgColor
         button.tintColor = .label
         return button
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .systemBackground
+        backgroundColor = .secondarySystemBackground
         addSubview()
         cameraButton.addTarget(self, action: #selector(didTapCameraButton), for: UIControl.Event.touchUpInside)
     }
@@ -55,14 +59,16 @@ class FeedChallangeHeaderCollectionReusableView: UICollectionReusableView {
     func addSubview(){
         addSubview(challangeLabel)
         addSubview(cameraButton)
+        addSubview(label)
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         let widht = frame.size.width
         let height = frame.size.height
+        label.frame = CGRect(x: 0, y: height - (height * 0.1), width: widht, height: height * 0.1)
         
-        challangeLabel.frame = CGRect(x: widht * 0.5 - (widht * 0.9) / 2, y: height * 0.5 - (height * 0.7) / 2, width: widht * 0.9, height: height * 0.7)
+        challangeLabel.frame = CGRect(x: widht * 0.5 - (widht * 0.9) / 2, y: height * 0.5 - (height * 0.7) / 2 - height * 0.05, width: widht * 0.9, height: height * 0.7)
         cameraButton.frame = CGRect(x: widht * 0.93 - (widht * 0.07) / 2 , y: height * 0.72 - (widht * 0.07) / 2, width: widht * 0.07, height: widht * 0.07)
         cameraButton.layer.cornerRadius = (widht * 0.07) / 2
         

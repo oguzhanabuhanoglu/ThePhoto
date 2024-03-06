@@ -7,9 +7,17 @@
 
 import UIKit
 
+protocol FriendRequestNotificationTableViewCellDelegate: AnyObject {
+    func FriendRequestNotificationTableViewCell(_ cell: FriendRequestTableViewCell, didTapAcceptButton)
+}
+
 class FriendRequestTableViewCell: UITableViewCell {
 
     static let identifier = "FriendRequestTableViewCell"
+    
+    weak var delegate: 
+    
+    private var viewModel: FriendRequestCellViewModel
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -106,6 +114,7 @@ class FriendRequestTableViewCell: UITableViewCell {
     
     @objc func didTapAcceptButton() {
     }
+    
     
     public func configure(with viewModel: FriendRequestCellViewModel){
         label.text = viewModel.username + " want to be your friend"

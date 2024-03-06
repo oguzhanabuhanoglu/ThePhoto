@@ -10,6 +10,7 @@ import UIKit
 class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource {
     
     private var collectionView: UICollectionView?
+   
     
     private let user: User
     private var headerViewModel: ProfileHeaderViewModel?
@@ -39,9 +40,14 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
         fetchProfileInfo()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchProfileInfo()
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        collectionView?.frame = view.bounds
+        self.collectionView?.frame = view.bounds
     }
     
     private func configureNavBar() {
@@ -53,6 +59,8 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
             navigationItem.rightBarButtonItem?.tintColor = .label
         }
     }
+    
+   
     
     @objc func didTapSettingsButton(){
         let settingsVC = SettingsViewController()
@@ -127,7 +135,14 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
         if !isCurrentUser {
             //get friendship state
             //i need to get informationa about is current user following
-            buttonType = .addFriend(isFriend: true)
+            group.enter()
+            DatabaseManager.shared.isFollowing(targetUsername: user.username) { isFollowing in
+                defer{
+                    group.leave()
+                }
+                buttonType = .addFriend(isFriend: isFollowing)
+            }
+            buttonType = .addFriend(isFriend: false)
         }
         
         group.notify(queue: .main) {
@@ -191,12 +206,28 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
     }
     
     func profileHeaderReusableViewDidTapAddFriend(_ profileHeader: ProfileHeaderCollectionReusableView) {
-        
+        DatabaseManager.shared.updateRelationship(state: DatabaseManager.RelationshipState.addFriend, for: user.username) { succes in
+            if !succes {
+                print("failed to add friend")
+                DispatchQueue.main.async {
+                    self.collectionView?.reloadData()
+                }
+            }
+        }
     }
     
     func profileHeaderReusableViewDidTapRemoveFriend(_ profileHeader: ProfileHeaderCollectionReusableView) {
-
+        DatabaseManager.shared.updateRelationship(state: DatabaseManager.RelationshipState.removeFriend, for: user.username) { succes in
+            if !succes {
+                print("failed to remove friend")
+                DispatchQueue.main.async {
+                    self.collectionView?.reloadData()
+                }
+            }
+        }
     }
+    
+    
 }
 
 extension ProfileViewController{

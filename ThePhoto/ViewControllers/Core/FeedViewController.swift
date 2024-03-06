@@ -357,10 +357,9 @@ extension FeedViewController: FeedChallangeHeaderCollectionReusableViewDelegate,
                 layoutSize: headerSize,
                 elementKind: UICollectionView.elementKindSectionHeader,
                 alignment: .top)
-                if index == 0 {
+                //if index == 0 {
                     section.boundarySupplementaryItems = [sectionHeader]
-                }
-                
+                //}
                 return section
                             
                 

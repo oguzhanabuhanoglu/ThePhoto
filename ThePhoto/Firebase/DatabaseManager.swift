@@ -113,10 +113,6 @@ public class DatabaseManager {
         }
     }
     
-    
-    
-    // MARK: Notifications
-    
     //get particular post for notifications
     public func getNotificatedPost(with identifier: String, from username: String, completion: @escaping (Post?) -> Void){
         let ref = database.collection("users").document(username).collection("posts").document(identifier)
@@ -129,6 +125,10 @@ public class DatabaseManager {
         }
         
     }
+    
+    
+    
+    // MARK: Notifications
     
     public func getNotifications(completion: @escaping ([TPNotification]) -> Void){
         guard let username = UserDefaults.standard.string(forKey: "username") else {
@@ -155,6 +155,57 @@ public class DatabaseManager {
     }
    
    
+    // MARK: Relaationships
+    
+    public enum RelationshipState{
+        case addFriend
+        case removeFriend
+    }
+    
+    public func updateRelationship(state: RelationshipState, for targetUsername: String, completion: @escaping (Bool) -> Void){
+        
+        guard let currentUsername = UserDefaults.standard.string(forKey: "username") else {
+            completion(false)
+            return
+        }
+        
+        let currentUserFriends = database.collection("users").document(currentUsername).collection("friendList")
+        let targetUserFriends = database.collection("users").document(targetUsername).collection("friendList")
+        
+        switch state {
+        case .addFriend:
+            // push notifitaciton to the target user and its gonna be friendRequest notification
+            
+            //that code just for testing
+            currentUserFriends.addDocument(data: ["valid" : "1"])
+            targetUserFriends.addDocument(data: ["valid" : "1"])
+            break
+        case .removeFriend:
+            // remove targetUser from currentUser friendList on database
+            currentUserFriends.document(targetUsername).delete()
+            // remove currentUser from targetUser friendList on database
+            targetUserFriends.document(currentUsername).delete()
+        }
+    }
+    
+    public func isFollowing(targetUsername: String, completion: @escaping (Bool) -> Void){
+        guard let currentUsername = UserDefaults.standard.string(forKey: "username") else {
+            completion(false)
+            return
+        }
+        
+        let ref = database.collection("users").document(targetUsername).collection("friendList").document(currentUsername)
+        
+        ref.getDocument { snapshot, error in
+            guard snapshot?.data() != nil, error == nil else {
+                //not following
+                completion(false)
+                return
+            }
+            //following
+            completion(true)
+        }
+    }
     
 }
 

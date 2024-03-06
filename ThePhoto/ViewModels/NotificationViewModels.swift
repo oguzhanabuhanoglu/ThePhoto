@@ -12,6 +12,7 @@ struct FriendRequestCellViewModel: Equatable {
     let profilePictureUrl: URL
     let date: String
     //isFollowing to iaFriends
+    
 }
 
 struct LikeCellViewModel: Equatable{

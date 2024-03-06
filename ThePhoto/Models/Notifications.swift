@@ -18,4 +18,5 @@ public struct TPNotification: Codable{
     let postId: String?
     let postUrl: String?
     
+    
 }

@@ -21,6 +21,7 @@ final class NotificationsManager {
         DatabaseManager.shared.getNotifications(completion: completion)
     }
     
+    //username for target user we gonna insert the notifications for the target user
     public func create(notification: TPNotification, for username: String) {
         let id = notification.identifier
         guard let dictionary = notification.asDictionary() else {
