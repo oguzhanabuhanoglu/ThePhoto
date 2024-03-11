@@ -7,17 +7,18 @@
 
 import UIKit
 
-/*protocol FriendRequestNotificationTableViewCellDelegate: AnyObject {
-    func FriendRequestNotificationTableViewCell(_ cell: FriendRequestTableViewCell, didTapAcceptButton)
-}*/
+protocol FriendRequestNotificationTableViewCellDelegate: AnyObject {
+    func FriendRequestNotificationTableViewCell(_ cell: FriendRequestTableViewCell, didTapAcceptButton viewModel: FriendRequestCellViewModel)
+    func FriendRequestNotificationTableViewCell(_ cell: FriendRequestTableViewCell, didTapDeclineButton viewModel: FriendRequestCellViewModel)
+}
 
 class FriendRequestTableViewCell: UITableViewCell {
 
     static let identifier = "FriendRequestTableViewCell"
     
-   // weak var delegate:
+    weak var delegate: FriendRequestNotificationTableViewCellDelegate?
     
-    //private var viewModel: FriendRequestCellViewModel
+    private var viewModel: FriendRequestCellViewModel?
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -108,10 +109,18 @@ class FriendRequestTableViewCell: UITableViewCell {
     }
     
     @objc func didTapDeclineButton() {
+        guard let vm = viewModel else {
+            return
+        }
+        delegate?.FriendRequestNotificationTableViewCell(self, didTapDeclineButton: vm)
        
     }
     
     @objc func didTapAcceptButton() {
+        guard let vm = viewModel else {
+            return
+        }
+        delegate?.FriendRequestNotificationTableViewCell(self, didTapAcceptButton: vm)
     }
     
     
@@ -119,6 +128,7 @@ class FriendRequestTableViewCell: UITableViewCell {
         label.text = viewModel.username + " want to be your friend"
         profileImageView.sd_setImage(with: viewModel.profilePictureUrl, completed: nil)
         dateLabel.text = viewModel.date
+        
         
     }
     

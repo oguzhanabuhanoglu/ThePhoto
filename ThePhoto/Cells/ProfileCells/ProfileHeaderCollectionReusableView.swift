@@ -136,7 +136,7 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
     }
     
     
-    private var isFriend = false
+    
     
     public func configure(with viewModel: ProfileHeaderViewModel){
         profileImageView.sd_setImage(with: viewModel.profilePictureUrl, completed: nil)
@@ -162,7 +162,7 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
             actionButton.layer.borderColor = UIColor.secondaryLabel.cgColor
             
         case .addFriend(let isFriend):
-            self.isFriend = isFriend
+            DatabaseManager.isFriend = isFriend
             self.action = profileButtonType.addFriend(isFriend: isFriend)
             updateRelationshipButton()
         }
@@ -174,25 +174,28 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         case.edit:
             delegate?.profileHeaderReusableViewDidTapEditProfile(self)
         case.addFriend:
-            if self.isFriend {
-                //add friend
+            if DatabaseManager.isFriend {
+                
                 delegate?.profileHeaderReusableViewDidTapRemoveFriend(self)
-
+                DatabaseManager.isFriend = !DatabaseManager.isFriend
+                updateRelationshipButton()
             }else{
+                
+                actionButton.setTitle("Request sent", for: .normal)
+                actionButton.backgroundColor = .tertiaryLabel
+                actionButton.setTitleColor(.label, for: UIControl.State.normal)
                 delegate?.profileHeaderReusableViewDidTapAddFriend(self)
                 
+                
+                
             }
-            
-            self.isFriend = !isFriend
-            updateRelationshipButton()
         }
+        
     }
-    
-    
     func updateRelationshipButton() {
-        actionButton.backgroundColor = isFriend ? .systemGray4 : .systemBlue
-        actionButton.setTitle(isFriend ? "Remove Friend" : "Add Friend", for: .normal)
-        actionButton.setTitleColor(isFriend ? .label : .white, for: .normal)
+        actionButton.backgroundColor = DatabaseManager.isFriend ? .systemGray4 : .systemBlue
+        actionButton.setTitle(DatabaseManager.isFriend ? "Remove Friend" : "Add Friend", for: .normal)
+        actionButton.setTitleColor(DatabaseManager.isFriend ? .label : .white, for: .normal)
     }
     
     

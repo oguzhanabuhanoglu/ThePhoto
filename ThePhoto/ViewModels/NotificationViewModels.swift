@@ -11,7 +11,7 @@ struct FriendRequestCellViewModel: Equatable {
     let username: String
     let profilePictureUrl: URL
     let date: String
-    //isFollowing to iaFriends
+    var isFriends: Bool
     
 }
 

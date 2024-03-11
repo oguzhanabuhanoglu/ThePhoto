@@ -147,13 +147,13 @@ public class DatabaseManager {
     
     
     public func insertNotification(identifier: String, data: [String:Any], for username: String) {
-        guard let username = UserDefaults.standard.string(forKey: "username") else {
+       /* guard let username = UserDefaults.standard.string(forKey: "username") else {
             return
-        }
+        }*/
         let ref = database.collection("users").document(username).collection("notifications").document(identifier)
         ref.setData(data)
     }
-   
+    static var isFriend = false
    
     // MARK: Relaationships
     

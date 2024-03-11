@@ -67,7 +67,7 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
             }
             
             let username = model.username
-            guard let profilePicture = URL(string :model.profilePicture) else {
+            guard let profilePicture = URL(string : model.profilePicture) else {
                 return
             }
             
@@ -85,7 +85,8 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
                 viewModels.append(.comment(viewModel: CommentCellViewModel(username: username, profilePicturUrl: profilePicture, postUrl: postUrl, date: model.dateString)))
                 
             case .friendRequest:
-                viewModels.append(.firendRequest(viewModel: FriendRequestCellViewModel(username: username, profilePictureUrl: profilePicture, date: model.dateString)))
+                viewModels.append(.firendRequest(viewModel: FriendRequestCellViewModel(username: username, profilePictureUrl: profilePicture, date: model.dateString, isFriends: false)))
+                
             }
         }
         
@@ -187,8 +188,41 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
 }
 
 //ACTİONS
-//friends request eklemedim.pusudayım
-extension NotificationsViewController: LikeNotificationTableViewCellDelegate, CommentNotificationTableViewCellDelegate {
+extension NotificationsViewController: LikeNotificationTableViewCellDelegate, CommentNotificationTableViewCellDelegate, FriendRequestNotificationTableViewCellDelegate {
+    
+    func FriendRequestNotificationTableViewCell(_ cell: FriendRequestTableViewCell, didTapAcceptButton viewModel: FriendRequestCellViewModel) {
+        DatabaseManager.shared.updateRelationship(state: DatabaseManager.RelationshipState.addFriend, for: viewModel.username) { succes in
+            if !succes {
+                print("failed to add friend")
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }else{
+                /*guard let viewModel = FriendRequestCellViewModel(username: viewModel.username, profilePictureUrl: viewModel.profilePictureUrl, date: viewModel.date, isFriends: ProfileHeaderCollectionReusableView.isFriend) else {
+                    return
+                }*/
+                DatabaseManager.isFriend = true
+                func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+                    if editingStyle == .delete {
+                        self.models.remove(at: indexPath.row)
+                        tableView.deleteRows(at: [indexPath], with: .fade)
+                        
+                    }
+                }
+            }
+        }
+    }
+    
+    func FriendRequestNotificationTableViewCell(_ cell: FriendRequestTableViewCell, didTapDeclineButton viewModel: FriendRequestCellViewModel) {
+        func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+            if editingStyle == .delete {
+                self.models.remove(at: indexPath.row)
+                tableView.deleteRows(at: [indexPath], with: .fade)
+                
+            }
+        }
+    }
+    
     
     func likeNotificationTableViewCell(_ cell: LikeNotificationTableViewCell, didTapPostWith viewModel: LikeCellViewModel) {
         //like alan postu açmamız lazım.viewModeldan username alıp databaseden username e göre postu cekmemiz lazım.
