@@ -9,7 +9,13 @@ import Foundation
 
 enum profileButtonType {
     case edit
-    case addFriend(isFriend: Bool)
+    case addFriend(friendshipStates)
+}
+
+enum friendshipStates {
+    case yes
+    case no
+    case maybe
 }
                    
 public struct ProfileHeaderViewModel {

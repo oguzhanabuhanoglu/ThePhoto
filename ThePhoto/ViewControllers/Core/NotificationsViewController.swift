@@ -190,6 +190,7 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
 //ACTİONS
 extension NotificationsViewController: LikeNotificationTableViewCellDelegate, CommentNotificationTableViewCellDelegate, FriendRequestNotificationTableViewCellDelegate {
     
+    //ÇALISMIYOR
     func FriendRequestNotificationTableViewCell(_ cell: FriendRequestTableViewCell, didTapAcceptButton viewModel: FriendRequestCellViewModel) {
         DatabaseManager.shared.updateRelationship(state: DatabaseManager.RelationshipState.addFriend, for: viewModel.username) { succes in
             if !succes {
@@ -213,6 +214,7 @@ extension NotificationsViewController: LikeNotificationTableViewCellDelegate, Co
         }
     }
     
+    //ÇALISMIYOR 
     func FriendRequestNotificationTableViewCell(_ cell: FriendRequestTableViewCell, didTapDeclineButton viewModel: FriendRequestCellViewModel) {
         func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
             if editingStyle == .delete {

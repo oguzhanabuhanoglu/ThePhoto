@@ -144,7 +144,13 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
                     group.leave()
                 }
                 print(isFollowing)
-                buttonType = .addFriend(isFriend: isFollowing)
+                if isFollowing == true {
+                    if didta
+                    buttonType = .addFriend(friendshipStates.yes)
+                }else if isFollowing == false {
+                    buttonType = .addFriend(friendshipStates.no)
+                }
+              
             }
         }
         
@@ -217,18 +223,15 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
                     self?.collectionView?.reloadData()
                 }
             }
-            
         }*/
         guard let username = UserDefaults.standard.string(forKey: "username") else {
             return
         }
-        print(username)
-        
+       
         var profilePictureURL: String?
         StorageManager.shared.profilePictureURL(for: username) { url in
             
             profilePictureURL = url?.absoluteString ?? ""
-            print(profilePictureURL)
             
             let id = NotificationsManager.newIdentifier()
             let model = TPNotification(identifier: id,
@@ -240,6 +243,8 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
                                        postUrl: "")
             
             NotificationsManager.shared.create(notification: model, for: self.user.username)
+            profileButtonType.addFriend(friendshipStates.maybe)
+            
         }
         
         
