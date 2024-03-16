@@ -192,7 +192,7 @@ extension NotificationsViewController: LikeNotificationTableViewCellDelegate, Co
     
     //ÇALISMIYOR
     func FriendRequestNotificationTableViewCell(_ cell: FriendRequestTableViewCell, didTapAcceptButton viewModel: FriendRequestCellViewModel) {
-        DatabaseManager.shared.updateRelationship(state: DatabaseManager.RelationshipState.addFriend, for: viewModel.username) { succes in
+        /*DatabaseManager.shared.updateRelationship(state: DatabaseManager.RelationshipState.addFriend, for: viewModel.username) { succes in
             if !succes {
                 print("failed to add friend")
                 DispatchQueue.main.async {
@@ -211,18 +211,18 @@ extension NotificationsViewController: LikeNotificationTableViewCellDelegate, Co
                     }
                 }
             }
-        }
+        }*/
     }
     
     //ÇALISMIYOR 
     func FriendRequestNotificationTableViewCell(_ cell: FriendRequestTableViewCell, didTapDeclineButton viewModel: FriendRequestCellViewModel) {
-        func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        /*func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
             if editingStyle == .delete {
                 self.models.remove(at: indexPath.row)
                 tableView.deleteRows(at: [indexPath], with: .fade)
                 
             }
-        }
+        }*/
     }
     
     

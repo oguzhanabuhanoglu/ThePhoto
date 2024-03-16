@@ -170,7 +170,7 @@ public class DatabaseManager {
         }
         
         let currentUserFriends = database.collection("users").document(currentUsername).collection("friendList")
-        let targetUserFriends = database.collection("users").document(targetUsername).collection("friendList")
+        let targetUserFriends = database.collection("users").document(targetUsername).collection("friendRequestList")
         
         switch state {
         case .addFriend:
@@ -189,6 +189,27 @@ public class DatabaseManager {
             completion(true)
         }
     }
+    
+    public func checkRequestList(targetUsername: String, completion: @escaping (Bool) -> Void) {
+        guard let currentUsername = UserDefaults.standard.string(forKey: "username") else {
+            return
+        }
+        
+        let ref = database.collection("users").document(targetUsername).collection("friendRequestList").document(currentUsername)
+        
+        ref.getDocument { snapshot, error in
+            guard snapshot?.data() != nil, error == nil else {
+                //there isnt request from putecular user
+                completion(false)
+                return
+            }
+            //there is request
+            completion(true)
+        }
+        
+    }
+    
+    
     
     public func isFollowing(targetUsername: String, completion: @escaping (Bool) -> Void){
         guard let currentUsername = UserDefaults.standard.string(forKey: "username") else {

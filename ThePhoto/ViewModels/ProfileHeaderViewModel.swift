@@ -9,7 +9,7 @@ import Foundation
 
 enum profileButtonType {
     case edit
-    case addFriend(friendshipStates)
+    case addFriend(isFriend: Bool)
 }
 
 enum friendshipStates {

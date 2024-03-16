@@ -22,6 +22,8 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
     
     private var action = profileButtonType.edit
     
+    var username = ""
+    
     private let profileImageView : UIImageView = {
         let image = UIImageView()
         image.contentMode = .scaleAspectFill
@@ -92,6 +94,7 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         addSubview(dailyImageView)
         addSubview(actionButton)
         addAction()
+        //print(username)
     }
     
     required init?(coder: NSCoder) {
@@ -136,9 +139,7 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
     }
     
     
-    /*actionButton.setTitle("Request sent", for: .normal)
-    actionButton.backgroundColor = .tertiaryLabel
-    actionButton.setTitleColor(.label, for: UIControl.State.normal)*/
+    
     
     public func configure(with viewModel: ProfileHeaderViewModel){
         profileImageView.sd_setImage(with: viewModel.profilePictureUrl, completed: nil)
@@ -163,55 +164,52 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
             actionButton.layer.borderWidth = 0.6
             actionButton.layer.borderColor = UIColor.secondaryLabel.cgColor
             
-        case .addFriend(let friendshipStates):
-            switch friendshipStates {
-            case .yes:
-                actionButton.backgroundColor = .systemGray4
-                actionButton.setTitle("Remove Friend", for: .normal)
-                actionButton.setTitleColor( .label, for: .normal)
-            case .no:
-                actionButton.backgroundColor = .systemBlue
-                actionButton.setTitle("Add Friend", for: .normal)
-                actionButton.setTitleColor(.white, for: .normal)
-            case .maybe:
-                actionButton.setTitle("Request sent", for: .normal)
-                actionButton.backgroundColor = .tertiaryLabel
-                actionButton.setTitleColor(.label, for: UIControl.State.normal)
-            }
-            
-            /*self.action = profileButtonType.addFriend(friendshipStates)
+        case .addFriend(let isFriend):
+            DatabaseManager.isFriend = isFriend
+            self.action = profileButtonType.addFriend(isFriend: isFriend)
             if DatabaseManager.isFriend == true {
                 actionButton.backgroundColor = .systemGray4
                 actionButton.setTitle("Remove Friend", for: .normal)
                 actionButton.setTitleColor( .label, for: .normal)
             }else{
-                actionButton.backgroundColor = .systemBlue
-                actionButton.setTitle("Add Friend", for: .normal)
-                actionButton.setTitleColor(.white, for: .normal)
-            }*/
-            
+                DatabaseManager.shared.checkRequestList(targetUsername: username) { yes in
+                    if yes {
+                        self.actionButton.setTitle("Request sent", for: .normal)
+                        self.actionButton.backgroundColor = .tertiaryLabel
+                        self.actionButton.setTitleColor(.label, for: UIControl.State.normal)
+                        self.reloadInputViews()
+                    } else {
+                        self.actionButton.backgroundColor = .systemBlue
+                        self.actionButton.setTitle("Add Friend", for: .normal)
+                        self.actionButton.setTitleColor( .white, for: .normal)
+                    }
+                    
+                }
+                
+                
+                
+            }
+        }
     }
     
     
-    //@objc
-        func didTapAcitonButton() {
+    @objc func didTapAcitonButton() {
     
         switch action {
         case.edit:
             delegate?.profileHeaderReusableViewDidTapEditProfile(self)
-            
-        case.addFriend(let friendshipStates):
-            switch friendshipStates {
-            case .yes:
+        case.addFriend:
+            if DatabaseManager.isFriend {
+                
                 delegate?.profileHeaderReusableViewDidTapRemoveFriend(self)
-            case .no:
+                DatabaseManager.isFriend = !DatabaseManager.isFriend
+                updateRelationshipButton()
+            }else{
+                
+               
                 delegate?.profileHeaderReusableViewDidTapAddFriend(self)
-            case .maybe:
-                actionButton.isUserInteractionEnabled = false
             }
-
         }
-    
         
     }
     func updateRelationshipButton() {

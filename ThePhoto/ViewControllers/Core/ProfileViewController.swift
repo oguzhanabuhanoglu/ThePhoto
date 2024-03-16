@@ -13,6 +13,7 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
    
     
     private let user: User
+    var onGetUser: (() -> User?)?
     private var headerViewModel: ProfileHeaderViewModel?
     private var posts: [Post] = []
     
@@ -144,13 +145,7 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
                     group.leave()
                 }
                 print(isFollowing)
-                if isFollowing == true {
-                    if didta
-                    buttonType = .addFriend(friendshipStates.yes)
-                }else if isFollowing == false {
-                    buttonType = .addFriend(friendshipStates.no)
-                }
-              
+                buttonType = .addFriend(isFriend: isFollowing)
             }
         }
         
@@ -185,6 +180,7 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
               let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: ProfileHeaderCollectionReusableView.identifier, for: indexPath) as? ProfileHeaderCollectionReusableView else {
             return UICollectionReusableView()
         }
+        header.username = user.username
         if let viewModel = headerViewModel {
             header.configure(with: viewModel)
             header.delegate = self
@@ -216,40 +212,36 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
     }
     
     func profileHeaderReusableViewDidTapAddFriend(_ profileHeader: ProfileHeaderCollectionReusableView) {
-        /*DatabaseManager.shared.updateRelationship(state: DatabaseManager.RelationshipState.addFriend, for: user.username)  { [weak self] succes in
+        DatabaseManager.shared.updateRelationship(state: DatabaseManager.RelationshipState.addFriend, for: user.username)  { [weak self] succes in
             if !succes {
                 print("failed to add friend")
                 DispatchQueue.main.async {
                     self?.collectionView?.reloadData()
+                }} else {
+                    guard let username = UserDefaults.standard.string(forKey: "username") else {
+                        return
+                    }
+                    
+                    var profilePictureURL: String?
+                    StorageManager.shared.profilePictureURL(for: username) { url in
+                        
+                        profilePictureURL = url?.absoluteString ?? ""
+                        
+                        let id = NotificationsManager.newIdentifier()
+                        let model = TPNotification(identifier: id,
+                                                   notificationType: 3,
+                                                   profilePicture: profilePictureURL ?? "",
+                                                   username: username,
+                                                   dateString: String.dateString(from: Date()) ?? "Now",
+                                                   postId: "",
+                                                   postUrl: "")
+                        
+                        NotificationsManager.shared.create(notification: model, for: self!.user.username)
+                        
+                    }
                 }
             }
-        }*/
-        guard let username = UserDefaults.standard.string(forKey: "username") else {
-            return
-        }
-       
-        var profilePictureURL: String?
-        StorageManager.shared.profilePictureURL(for: username) { url in
-            
-            profilePictureURL = url?.absoluteString ?? ""
-            
-            let id = NotificationsManager.newIdentifier()
-            let model = TPNotification(identifier: id,
-                                       notificationType: 3,
-                                       profilePicture: profilePictureURL ?? "",
-                                       username: username,
-                                       dateString: String.dateString(from: Date()) ?? "Now",
-                                       postId: "",
-                                       postUrl: "")
-            
-            NotificationsManager.shared.create(notification: model, for: self.user.username)
-            profileButtonType.addFriend(friendshipStates.maybe)
-            
-        }
-        
-        
-        
-     }
+    }
     
     func profileHeaderReusableViewDidTapRemoveFriend(_ profileHeader: ProfileHeaderCollectionReusableView) {
         DatabaseManager.shared.updateRelationship(state: DatabaseManager.RelationshipState.removeFriend, for: user.username) { [weak self] succes in
