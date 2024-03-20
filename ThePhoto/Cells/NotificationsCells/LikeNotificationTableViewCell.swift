@@ -59,14 +59,16 @@ class LikeNotificationTableViewCell: UITableViewCell {
         addSubview(postImageView)
         addSubview(dateLabel)
         
+        
         postImageView.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapPost))
-        profileImageView.addGestureRecognizer(tap)
+        postImageView.addGestureRecognizer(tap)
     }
     
     //bu fonksiyonun içinden de viewModela ulaşabilmek için sınıf altında viewModelı tanımladık.Bu fonksiyon ve configure fonksiyonu altında unwrap ettik.
     @objc func didTapPost(){
         guard let vm = viewModel else {
+            print("wtf")
             return
         }
         delegate?.likeNotificationTableViewCell(self, didTapPostWith: vm)

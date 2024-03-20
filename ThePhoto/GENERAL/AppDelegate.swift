@@ -28,12 +28,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //add dummy notification for current user
         let id = NotificationsManager.newIdentifier()
         let model = TPNotification(identifier: id,
-                                   notificationType: 3,
+                                   notificationType: 1,
                                    profilePicture: "https://iosacademy.io/assets/images/brand/icon.jpg",
                                    username: "HakanKa",
                                    dateString: String.dateString(from: Date()) ?? "Now" ,
-                                   postId: "",
-                                   postUrl: ""
+                                   postId: "123",
+                                   postUrl: "https://iosacademy.io/assets/images/brand/icon.jpg"
         )
         //NotificationsManager.shared.create(notification: model, for: "Krcbtu")
         

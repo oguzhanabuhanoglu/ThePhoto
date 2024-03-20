@@ -110,6 +110,7 @@ class FriendRequestTableViewCell: UITableViewCell {
     
     @objc func didTapDeclineButton() {
         guard let vm = viewModel else {
+            print("wtf")
             return
         }
         delegate?.FriendRequestNotificationTableViewCell(self, didTapDeclineButton: vm)
@@ -118,13 +119,17 @@ class FriendRequestTableViewCell: UITableViewCell {
     
     @objc func didTapAcceptButton() {
         guard let vm = viewModel else {
+            
+            print("wtf")
             return
         }
+        print(vm)
         delegate?.FriendRequestNotificationTableViewCell(self, didTapAcceptButton: vm)
     }
     
     
     public func configure(with viewModel: FriendRequestCellViewModel){
+        self.viewModel = viewModel
         label.text = viewModel.username + " want to be your friend"
         profileImageView.sd_setImage(with: viewModel.profilePictureUrl, completed: nil)
         dateLabel.text = viewModel.date

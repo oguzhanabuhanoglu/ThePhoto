@@ -170,7 +170,7 @@ public class DatabaseManager {
         }
         
         let currentUserFriends = database.collection("users").document(currentUsername).collection("friendList")
-        let targetUserFriends = database.collection("users").document(targetUsername).collection("friendRequestList")
+        let targetUserFriends = database.collection("users").document(targetUsername).collection("friendList")
         
         switch state {
         case .addFriend:
@@ -189,6 +189,36 @@ public class DatabaseManager {
             completion(true)
         }
     }
+    
+    public func friendRequest(state: RelationshipState, for targetUsername: String, completion: @escaping (Bool) -> Void){
+        
+        guard let currentUsername = UserDefaults.standard.string(forKey: "username") else {
+            completion(false)
+            return
+        }
+        
+        let currentUserFriends = database.collection("users").document(currentUsername).collection("friendRequestList")
+        let targetUserFriends = database.collection("users").document(targetUsername).collection("friendRequestList")
+        
+        switch state {
+        case .addFriend:
+            // push notifitaciton to the target user and its gonna be friendRequest notification
+            targetUserFriends.document(currentUsername).setData(["valid" : "1"])
+
+            completion(true)
+        case .removeFriend:
+            // remove targetUser from currentUser friendList on database
+            currentUserFriends.document(targetUsername).delete()
+            // remove currentUser from targetUser friendList on database
+            targetUserFriends.document(currentUsername).delete()
+            completion(true)
+        }
+    }
+    
+    
+    
+    
+    
     
     public func checkRequestList(targetUsername: String, completion: @escaping (Bool) -> Void) {
         guard let currentUsername = UserDefaults.standard.string(forKey: "username") else {

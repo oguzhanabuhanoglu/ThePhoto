@@ -17,6 +17,8 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
     private var headerViewModel: ProfileHeaderViewModel?
     private var posts: [Post] = []
     
+   
+    
     private var isCurrentUser : Bool {
         return user.username.lowercased() == UserDefaults.standard.string(forKey: "username")?.lowercased() ?? ""
     }
@@ -196,9 +198,6 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
 }
 
 extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
-    func profileHeaderReusableViewDidTapProfilePicture(_ profileHeader: ProfileHeaderCollectionReusableView) {
-        
-    }
     
     func profileHeaderReusableViewDidTapEditProfile(_ profileHeader: ProfileHeaderCollectionReusableView) {
         let vc = EditProfileViewController()
@@ -211,8 +210,10 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
         
     }
     
+    
+    
     func profileHeaderReusableViewDidTapAddFriend(_ profileHeader: ProfileHeaderCollectionReusableView) {
-        DatabaseManager.shared.updateRelationship(state: DatabaseManager.RelationshipState.addFriend, for: user.username)  { [weak self] succes in
+        DatabaseManager.shared.friendRequest(state: DatabaseManager.RelationshipState.addFriend, for: user.username) { [weak self] succes in
             if !succes {
                 print("failed to add friend")
                 DispatchQueue.main.async {
@@ -239,8 +240,12 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
                         NotificationsManager.shared.create(notification: model, for: self!.user.username)
                         
                     }
+                    DispatchQueue.main.async {
+                        self?.collectionView?.reloadData()
+                    }
+                    
                 }
-            }
+        }
     }
     
     func profileHeaderReusableViewDidTapRemoveFriend(_ profileHeader: ProfileHeaderCollectionReusableView) {
@@ -251,8 +256,22 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
                     self?.collectionView?.reloadData()
                 }
             }
-            
         }
+    }
+    
+    func profileHeaderReusableViewDidTapRequested(_ profileHeader: ProfileHeaderCollectionReusableView) {
+        DatabaseManager.shared.friendRequest(state: .removeFriend, for: user.username) { success in
+            if !success {
+                print("failed to remove friend")
+            }else{
+                DispatchQueue.main.async {
+                    self.collectionView?.reloadData()
+                }
+            }
+        }
+    }
+    
+    func profileHeaderReusableViewDidTapProfilePicture(_ profileHeader: ProfileHeaderCollectionReusableView) {
         
     }
     

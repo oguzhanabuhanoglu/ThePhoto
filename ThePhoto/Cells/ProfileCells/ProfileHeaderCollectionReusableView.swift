@@ -12,6 +12,7 @@ protocol ProfileHeaderCollectionReusableViewDelegate : AnyObject {
     func profileHeaderReusableViewDidTapEditProfile(_ profileHeader: ProfileHeaderCollectionReusableView)
     func profileHeaderReusableViewDidTapAddFriend(_ profileHeader: ProfileHeaderCollectionReusableView)
     func profileHeaderReusableViewDidTapRemoveFriend(_ profileHeader: ProfileHeaderCollectionReusableView)
+    func profileHeaderReusableViewDidTapRequested(_ profileHeader: ProfileHeaderCollectionReusableView)
 }
 
 class ProfileHeaderCollectionReusableView: UICollectionReusableView {
@@ -177,7 +178,7 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
                         self.actionButton.setTitle("Request sent", for: .normal)
                         self.actionButton.backgroundColor = .tertiaryLabel
                         self.actionButton.setTitleColor(.label, for: UIControl.State.normal)
-                        self.reloadInputViews()
+                        
                     } else {
                         self.actionButton.backgroundColor = .systemBlue
                         self.actionButton.setTitle("Add Friend", for: .normal)
@@ -185,9 +186,6 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
                     }
                     
                 }
-                
-                
-                
             }
         }
     }
@@ -200,14 +198,19 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
             delegate?.profileHeaderReusableViewDidTapEditProfile(self)
         case.addFriend:
             if DatabaseManager.isFriend {
-                
                 delegate?.profileHeaderReusableViewDidTapRemoveFriend(self)
                 DatabaseManager.isFriend = !DatabaseManager.isFriend
                 updateRelationshipButton()
             }else{
-                
+                DatabaseManager.shared.checkRequestList(targetUsername: username) { yes in
+                    if yes {
+                        self.delegate?.profileHeaderReusableViewDidTapRequested(self)
+                    }else{
+                        self.delegate?.profileHeaderReusableViewDidTapAddFriend(self)
+                    }
+                }
                
-                delegate?.profileHeaderReusableViewDidTapAddFriend(self)
+               
             }
         }
         

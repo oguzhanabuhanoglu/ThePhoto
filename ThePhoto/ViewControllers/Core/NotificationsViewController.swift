@@ -28,7 +28,8 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
     }()
     
     private var viewModels : [NotificationCellTypes] = []
-    //to override model which notifications i fetched from database 
+    
+    //to override model which notifications i fetched from database
     private var models: [TPNotification] = []
     
     override func viewDidLoad() {
@@ -140,7 +141,7 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
                 fatalError()
             }
             cell.configure(with: viewModel)
-            //
+            cell.delegate = self
             return cell
         case .comment(let viewModel):
             guard let cell = tableView.dequeueReusableCell(withIdentifier: CommentNotificationTableViewCell.identifier, for: indexPath) as? CommentNotificationTableViewCell else {
@@ -192,26 +193,24 @@ extension NotificationsViewController: LikeNotificationTableViewCellDelegate, Co
     
     //ÇALISMIYOR
     func FriendRequestNotificationTableViewCell(_ cell: FriendRequestTableViewCell, didTapAcceptButton viewModel: FriendRequestCellViewModel) {
-        /*DatabaseManager.shared.updateRelationship(state: DatabaseManager.RelationshipState.addFriend, for: viewModel.username) { succes in
-            if !succes {
-                print("failed to add friend")
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
+        
+        DatabaseManager.shared.friendRequest(state: .removeFriend, for: viewModel.username) { success in
+            if !success{
+                print("failed when delete request")
             }else{
-                /*guard let viewModel = FriendRequestCellViewModel(username: viewModel.username, profilePictureUrl: viewModel.profilePictureUrl, date: viewModel.date, isFriends: ProfileHeaderCollectionReusableView.isFriend) else {
-                    return
-                }*/
-                DatabaseManager.isFriend = true
-                func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-                    if editingStyle == .delete {
-                        self.models.remove(at: indexPath.row)
-                        tableView.deleteRows(at: [indexPath], with: .fade)
-                        
+                DatabaseManager.shared.updateRelationship(state: .addFriend, for: viewModel.username) { completed in
+                    if !completed{
+                        print("failed when addin friend")
+                    }else{
+                        DatabaseManager.isFriend = true
+                        DispatchQueue.main.async {
+                            self.tableView.reloadData()
+                        }
                     }
                 }
             }
-        }*/
+        }
+        
     }
     
     //ÇALISMIYOR 
