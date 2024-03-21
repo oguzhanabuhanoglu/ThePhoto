@@ -17,14 +17,6 @@ final class NotificationsManager {
         case friendRequest = 3
     }
     
-    public func deleteFriendRequest(notification: TPNotification, completion: @escaping (Bool) -> Void){
-        guard let dictionary = notification.asDictionary() else {
-            return
-        }
-        let id = notification.identifier
-        let ref = DatabaseManager.shared.database.collection("notifications").document(id).delete()
-    }
-    
     public func getNotifications(completion: @escaping ([TPNotification]) -> Void){
         DatabaseManager.shared.getNotifications(completion: completion)
     }

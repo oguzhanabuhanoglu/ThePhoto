@@ -153,10 +153,30 @@ public class DatabaseManager {
         let ref = database.collection("users").document(username).collection("notifications").document(identifier)
         ref.setData(data)
     }
-    static var isFriend = false
-   
+    
+
+    
+    public func deleteNotificationsFromMe(targetUsername: String, completion: @escaping (Bool) -> Void){
+        guard let username = UserDefaults.standard.string(forKey: "username") else {
+            return
+        }
+        let ref = database.collection("users").document(username).collection("notifications")
+        ref.document("\(targetUsername)_3").delete()
+    }
+    
+    
+    public func deleteNotificationsFromTarget(targetUsername: String, completion: @escaping (Bool) -> Void){
+        guard let username = UserDefaults.standard.string(forKey: "username") else {
+            return
+        }
+        let ref = database.collection("users").document(targetUsername).collection("notifications") 
+        ref.document("\(username)_3").delete()
+    }
+    
+    
     // MARK: Relaationships
     
+    static var isFriend = false
     public enum RelationshipState{
         case addFriend
         case removeFriend
@@ -214,10 +234,6 @@ public class DatabaseManager {
             completion(true)
         }
     }
-    
-    
-    
-    
     
     
     public func checkRequestList(targetUsername: String, completion: @escaping (Bool) -> Void) {

@@ -191,7 +191,7 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
 //ACTİONS
 extension NotificationsViewController: LikeNotificationTableViewCellDelegate, CommentNotificationTableViewCellDelegate, FriendRequestNotificationTableViewCellDelegate {
     
-    //ÇALISMIYOR
+
     func FriendRequestNotificationTableViewCell(_ cell: FriendRequestTableViewCell, didTapAcceptButton viewModel: FriendRequestCellViewModel) {
         
         DatabaseManager.shared.friendRequest(state: .removeFriend, for: viewModel.username) { success in
@@ -205,6 +205,7 @@ extension NotificationsViewController: LikeNotificationTableViewCellDelegate, Co
                         DatabaseManager.isFriend = true
                         DispatchQueue.main.async {
                             self.tableView.reloadData()
+                            //DELETE ROW AT THE MOMENT
                         }
                     }
                 }
@@ -213,15 +214,25 @@ extension NotificationsViewController: LikeNotificationTableViewCellDelegate, Co
         
     }
     
-    //ÇALISMIYOR 
+ 
     func FriendRequestNotificationTableViewCell(_ cell: FriendRequestTableViewCell, didTapDeclineButton viewModel: FriendRequestCellViewModel) {
-        /*func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-            if editingStyle == .delete {
-                self.models.remove(at: indexPath.row)
-                tableView.deleteRows(at: [indexPath], with: .fade)
-                
+        DatabaseManager.shared.friendRequest(state: .removeFriend, for: viewModel.username) { success in
+            if !success {
+                print("issue on delete request")
+            }else{
+                DatabaseManager.shared.deleteNotificationsFromMe(targetUsername: viewModel.username) { success in
+                    if !success {
+                        print("issue on delete notification")
+                    }else{
+                        DispatchQueue.main.async {
+                            self.tableView.reloadData()
+                            //DELETE ROW AT THE MOMENT
+                        }
+                        
+                    }
+                }
             }
-        }*/
+        }
     }
     
     

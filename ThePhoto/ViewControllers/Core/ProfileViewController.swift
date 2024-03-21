@@ -228,7 +228,7 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
                         
                         profilePictureURL = url?.absoluteString ?? ""
                         
-                        let id = NotificationsManager.newIdentifier()
+                        let id = "\(username)_3"   
                         let model = TPNotification(identifier: id,
                                                    notificationType: 3,
                                                    profilePicture: profilePictureURL ?? "",
@@ -266,6 +266,12 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
             }else{
                 DispatchQueue.main.async {
                     self.collectionView?.reloadData()
+                }
+        
+                DatabaseManager.shared.deleteNotificationsFromTarget(targetUsername: self.user.username) { success in
+                    if !success {
+                       print("failed on delete notification")
+                    }
                 }
             }
         }
