@@ -294,9 +294,9 @@ extension FeedViewController: FeedChallangeHeaderCollectionReusableViewDelegate,
         }
         
         func didTapLikeCount() {
-            let vc = ListViewController()
+            /*let vc = ListViewController(type: .likers(user: <#T##User#>))
             vc.title = "List"
-            navigationController?.pushViewController(vc, animated: true)
+            navigationController?.pushViewController(vc, animated: true)*/
         }
         
         

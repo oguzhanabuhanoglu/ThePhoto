@@ -70,6 +70,21 @@ public class DatabaseManager {
         }
     }
     
+    public func findUserWUsername(with username: String, completion: @escaping (User?) -> Void){
+        let ref = database.collection("users")
+        ref.getDocuments { snapshot, error in
+            guard let users = snapshot?.documents.compactMap({ User(with: $0.data())}), error == nil else {
+                completion(nil)
+                return
+            }
+            let user = users.first(where: {$0.username == username})
+            completion(user)
+        }
+    }
+            
+    
+   
+    
     public func searchByUsername(with usernamePrefix: String, completion: @escaping ([User]) -> Void){
         let ref = database.collection("users")
         
@@ -235,6 +250,16 @@ public class DatabaseManager {
         }
     }
     
+    public func getFriends(for username: String, completion: @escaping ([String]) -> Void){
+        let ref = database.collection("users").document(username).collection("friendList")
+        ref.getDocuments { snapshot, error in
+            guard let usernames = snapshot?.documents.compactMap({ $0.documentID}) , error == nil else {
+                completion([])
+                return
+            }
+            completion(usernames)
+        }
+    }
     
     public func checkRequestList(targetUsername: String, completion: @escaping (Bool) -> Void) {
         guard let currentUsername = UserDefaults.standard.string(forKey: "username") else {

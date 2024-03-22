@@ -166,15 +166,13 @@ class NotificationsViewController: UIViewController, UITableViewDelegate, UITabl
             username = viewModel.username
         }
         
-        DatabaseManager.shared.findUser(with: username) { [weak self] user in
-            guard let user = user else {
-                return
+        DatabaseManager.shared.findUserWUsername(with: username) { user in
+            if let user = user {
+                DispatchQueue.main.async {
+                    let vc = ProfileViewController(user: user)
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
             }
-            DispatchQueue.main.async {
-                let vc = ProfileViewController(user: user)
-                self?.navigationController?.pushViewController(vc, animated: true)
-            }
-
         }
     }
     
