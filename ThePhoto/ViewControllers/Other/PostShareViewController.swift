@@ -98,6 +98,7 @@ class PostShareViewController: UIViewController {
     }
 
     @objc func didTapShareButton(){
+        let username = UserDefaults.standard.string(forKey: "username")
         var caption = captionText.text ?? ""
         if caption == "" {
             caption = challangeLabel.text ?? ""
@@ -115,7 +116,8 @@ class PostShareViewController: UIViewController {
             }
             
             //new post
-            let newPost = Post(id: newPostID,
+            let newPost = Post(postedBy: username!,
+                               id: newPostID,
                                postUrl: url.absoluteString,
                                caption: caption,
                                postedDate: String.dateString(from: Date()) ?? "",

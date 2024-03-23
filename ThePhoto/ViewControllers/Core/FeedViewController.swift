@@ -53,35 +53,48 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
         guard let username = UserDefaults.standard.string(forKey: "username") else {
             return
         }
-        DatabaseManager.shared.getPosts(for: username) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case.success(var posts):
-                    self?.viewModels.removeAll()
-                    let group = DispatchGroup()
+        print(username)
+        var usernameArray: [String] = []
+       
+       
+        DatabaseManager.shared.getFriends(for: username) { usernames in
+            usernameArray = usernames
+            usernameArray.append(username)
+            print(usernameArray)
+            
+            DatabaseManager.shared.getFeedPosts(for: usernameArray) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case.success(var posts):
                     
-                    posts.forEach { model in
-                        group.enter()
-                        self?.createViewModel(model: model, username: username, completion: { success in
-                            defer {
-                                group.leave()
-                            }
-                            if !success{
-                                print("failed when creating vm")
-                            }
-                        })
+                        self.viewModels.removeAll()
+                        let group = DispatchGroup()
+                        
+                        posts.forEach { model in
+                            group.enter()
+                            self.createViewModel(model: model, username: model.postedBy, completion: { success in
+                                defer {
+                                    group.leave()
+                                }
+                                if !success{
+                                    print("failed when creating vm")
+                                }
+                            })
+                        }
+                        
+                        group.notify(queue: .main) {
+                            self.collectionView?.reloadData()
+                        }
+                        
+                    case.failure(let error):
+                        print(error)
                     }
-                    
-                    group.notify(queue: .main) {
-                        self!.collectionView?.reloadData()
-                    }
-                    
-                case.failure(let error):
-                    print(error)
                 }
             }
         }
-    }
+        
+        
+           }
         
         private func createViewModel(model: Post, username: String, completion: @escaping (Bool) -> Void){
             
@@ -91,7 +104,7 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
                     return
                 }
                 let postData: [FeedCellTypes] = [
-                    .poster(viewModel: PosterCollectionViewCellViewModel(username:username,profilePictureURL: profilePictureURL)),
+                    .poster(viewModel: PosterCollectionViewCellViewModel(username: username,profilePictureURL: profilePictureURL)),
                     .post(viewModel: PostCollectionViewCellViewModel(postUrl: postURL)),
                     .actions(viewModel: PostActionsCollectionViewCellViewModel(isLiked: false, likers: [])),
                     .caption(viewModel: PostCaptionCollectionViewCellViewModel(username: username, caption: model.caption)),

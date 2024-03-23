@@ -32,7 +32,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        imageView.layer.cornerRadius = 15
+        //imageView.layer.cornerRadius = 15
         imageView.frame = contentView.bounds
         
     }

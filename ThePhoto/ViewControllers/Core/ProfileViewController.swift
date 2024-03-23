@@ -10,7 +10,15 @@ import UIKit
 class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource {
     
     private var collectionView: UICollectionView?
-   
+    
+    private let noActivityLabel : UILabel = {
+        let label = UILabel()
+        label.isHidden = true
+        label.text = "You are not friends"
+        label.textAlignment = .center
+        label.textColor = .secondaryLabel
+        return label
+    }()
     
     private let user: User
     var onGetUser: (() -> User?)?
@@ -40,6 +48,7 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
         
         configureNavBar()
         configureCollectionView()
+        view.addSubview(noActivityLabel)
         fetchProfileInfo()
         print(user.username)
     }
@@ -52,6 +61,7 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.collectionView?.frame = view.bounds
+        noActivityLabel.frame = CGRect(x: 0, y: view.frame.size.height * 0.45, width: view.frame.size.width, height: view.frame.size.height * 0.3)
     }
     
     private func configureNavBar() {
@@ -78,6 +88,7 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
         navigationController?.pushViewController(vc, animated: true)
     }
     
+    
     func fetchProfileInfo(){
         guard let username = UserDefaults.standard.string(forKey: "username") else {
             return
@@ -85,25 +96,58 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
         var profilePictureUrl: URL?
         var buttonType: profileButtonType = .edit
         var name: String = ""
-        var bio: String?
-        var score: Int?
+        var bio: String? = ""
+        var score: Int? = 0
         
         let group = DispatchGroup()
         
         //DATA FOR COLLECTİON POSTS
         group.enter()
-        DatabaseManager.shared.getPosts(for: username) { result in
-            defer {
-                group.leave()
-            }
-            
-            switch result {
-            case .success(let posts):
-                self.posts = posts
-            case .failure:
-                break
+        DatabaseManager.shared.isFollowing(targetUsername: user.username) { yes in
+            if yes {
+                DatabaseManager.shared.getPosts(for: self.user.username) { result in
+                    defer {
+                        group.leave()
+                    }
+                    
+                    switch result {
+                    case .success(let posts):
+                        self.posts = posts
+                    case .failure:
+                        break
+                    }
+                }
+            }else if username == self.user.username{
+                DatabaseManager.shared.getPosts(for: self.user.username) { result in
+                    defer {
+                        group.leave()
+                    }
+                    
+                    switch result {
+                    case .success(let posts):
+                        self.posts = posts
+                    case .failure:
+                        break
+                    }
+                }
+            } else {
+                DatabaseManager.shared.getPosts(for: self.user.username) { result in
+                    defer {
+                        group.leave()
+                    }
+                    
+                    switch result {
+                    case .success(let posts):
+                        self.posts = []
+                        self.noActivityLabel.isHidden = false
+                    case .failure:
+                        break
+                    }
+                }
+                
             }
         }
+        
         
         
         //DATA FOR HEADER
@@ -128,19 +172,19 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
                     score = userInfo.score
                 } else {
                     name = ""
-                    bio = nil
-                    score = nil
+                    bio = ""
+                    score = 0
                 }
+            print(name)
         }
+        
         
         //last image user shared
         
+
         
-        
-        //if profile is not for current user
+        //BUTTON TYPE
         if !isCurrentUser {
-            //get friendship state
-            //i need to get informationa about is current user following
             group.enter()
             DatabaseManager.shared.isFollowing(targetUsername: user.username) { isFollowing in
                 defer{
@@ -158,7 +202,6 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
                                                    challangeScore: score ?? 0,
                                                    dailyImage: nil,
                                                    buttonType: buttonType)
-            
             self.collectionView?.reloadData()
         }
 
@@ -166,7 +209,7 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return posts.count
+        return posts.count 
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -195,7 +238,18 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
         let vc = PostViewController(post: post)
         navigationController?.pushViewController(vc, animated: true)
     }
+    
+    
 }
+
+
+
+
+
+
+
+
+
 
 extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
     

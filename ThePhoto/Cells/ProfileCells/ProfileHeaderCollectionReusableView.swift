@@ -31,13 +31,14 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         image.layer.masksToBounds = true
         image.clipsToBounds = true
         image.isUserInteractionEnabled = true
-        image.image = UIImage(named: "sisifos")
+        image.image = UIImage(systemName: "person.circle")
+        image.tintColor = .secondaryLabel
         return image
     }()
     
     private let challangeScoreButton : UIButton = {
         let button = UIButton()
-        button.setTitle("2245", for: UIControl.State.normal)
+        button.setTitle("", for: UIControl.State.normal)
         button.setTitleColor(.label, for: UIControl.State.normal)
         button.backgroundColor = .systemBackground
         button.layer.borderColor = UIColor.secondaryLabel.cgColor
@@ -51,7 +52,7 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         label.backgroundColor = .systemBackground
         label.textColor = .label
         label.numberOfLines = 0
-        label.text = "Oğuzhan Abuhanoğlu\nThat's my fucking library"
+        label.text = "\n"
         label.font = .systemFont(ofSize: 17)
         label.textAlignment = .center
         return label
@@ -149,7 +150,7 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         if let name = viewModel.name {
             text = name + "\n"
         }
-        text += viewModel.bio ?? "welcome"
+        text += viewModel.bio ?? ""
         bioLabel.text = text
         
         
@@ -175,7 +176,7 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
             }else{
                 DatabaseManager.shared.checkRequestList(targetUsername: username) { yes in
                     if yes {
-                        self.actionButton.setTitle("Request sent", for: .normal)
+                        self.actionButton.setTitle("Requested", for: .normal)
                         self.actionButton.backgroundColor = .tertiaryLabel
                         self.actionButton.setTitleColor(.label, for: UIControl.State.normal)
                         

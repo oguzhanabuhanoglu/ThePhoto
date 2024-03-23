@@ -8,7 +8,8 @@
 import Foundation
 import FirebaseFirestore
 
-public struct Post : Codable {
+public struct Post : Codable, Equatable {
+    let postedBy: String
     let id: String
     let postUrl: String
     let caption: String

@@ -81,9 +81,7 @@ public class DatabaseManager {
             completion(user)
         }
     }
-            
-    
-   
+        
     
     public func searchByUsername(with usernamePrefix: String, completion: @escaping ([User]) -> Void){
         let ref = database.collection("users")
@@ -127,6 +125,37 @@ public class DatabaseManager {
             completion(.success(posts))
         }
     }
+    
+    
+    
+    public func getFeedPosts(for usernames: [String], completion: @escaping (Result<[Post], Error>) -> Void) {
+        let group = DispatchGroup()
+        var allPosts: [Post] = []
+     
+        for username in usernames {
+            group.enter()
+            print(usernames)
+            
+            let ref = database.collection("users").document(username).collection("posts")
+            ref.order(by: "postedDate", descending: true).getDocuments { snapshot, error in
+                defer {
+                    group.leave()
+                }
+                guard let posts = snapshot?.documents.compactMap({Post(with: $0.data())}), error == nil else {
+                    return
+                }
+                print(posts)
+                allPosts.append(contentsOf: posts)
+                
+            }
+        }
+        
+        group.notify(queue: .main) {
+            completion(.success(allPosts))
+            print(allPosts)
+        }
+    }
+    
     
     //get particular post for notifications
     public func getNotificatedPost(with identifier: String, from username: String, completion: @escaping (Post?) -> Void){
@@ -211,7 +240,6 @@ public class DatabaseManager {
         case .addFriend:
             // push notifitaciton to the target user and its gonna be friendRequest notification
             
-            //that code just for testing
             currentUserFriends.document(targetUsername).setData(["valid" : "1"])
             targetUserFriends.document(currentUsername).setData(["valid" : "1"])
 
