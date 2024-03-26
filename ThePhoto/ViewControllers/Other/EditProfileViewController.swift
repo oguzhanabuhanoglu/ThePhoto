@@ -9,7 +9,7 @@ import UIKit
 
 struct EditProfileFormModel {
     let label : String
-    let placeholdet : String
+    let placeholder : String
     var value : String?
 }
 
@@ -23,6 +23,14 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
         tableView.register(EditProfileTableViewCell.self, forCellReuseIdentifier: EditProfileTableViewCell.identifier)
         return tableView
     }()
+    
+    var name: String = ""
+    var username: String = ""
+    var bio: String = ""
+    
+    var newname: String = ""
+    var newusername: String = ""
+    var newbio: String = ""
     
     private var models = [[EditProfileFormModel]]()
     
@@ -39,16 +47,23 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
         tableView.dataSource = self
         tableView.tableHeaderView = createTableHeaderView()
         
-        configureModel()
         
         guard let username = UserDefaults.standard.string(forKey: "username") else { return }
         DatabaseManager.shared.getUserInfo(username: username) { [weak self] info in
             DispatchQueue.main.async {
                 if let info = info {
+                    self!.name = info.name
+                    self!.username = info.username
+                    self!.bio = info.bio ?? ""
+                    
+                    self?.configureModel()
+                    self?.tableView.reloadData()
                     
                 }
             }
         }
+        
+        
     }
     
     override func viewDidLayoutSubviews() {
@@ -61,8 +76,8 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     @objc func didTapSave(){
-        //let name = models.
-        let newInfo = UserInfo(username: "", name: "", bio: "", score: nil)
+        
+        let newInfo = UserInfo(username: newname, name: newusername, bio: newbio, score: nil)
         DatabaseManager.shared.setUserInfo(userInfo: newInfo) { [weak self] success in
             DispatchQueue.main.async {
                 if success {
@@ -99,16 +114,25 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
     private func configureModel(){
         //name, username, bio
         let section1label = ["Name","Username","Bio"]
+        let section1Texts = [self.name, self.username, self.bio]
+        print(section1Texts)
         var section1 = [EditProfileFormModel]()
-        for label in section1label {
-            let model = EditProfileFormModel(label: label, placeholdet: "Enter \(label)...", value: nil)
+        
+        for (index, label) in section1label.enumerated() {
+            var value = "" // Default value
+            if index < section1Texts.count {
+                value = section1Texts[index]
+            }
+            
+            let model = EditProfileFormModel(label: label, placeholder: "Enter \(label)...", value: value)
             section1.append(model)
         }
+
         //email, phonenumber, gender
         let section2label = ["Email","Phone","Gender"]
         var section2 = [EditProfileFormModel]()
         for label in section2label {
-            let model = EditProfileFormModel(label: label, placeholdet: "Enter \(label)...", value: nil)
+            let model = EditProfileFormModel(label: label, placeholder: "Enter \(label)...", value: nil)
             section2.append(model)
         }
         
@@ -147,6 +171,9 @@ class EditProfileViewController: UIViewController, UITableViewDelegate, UITableV
 extension EditProfileViewController : EditProfileTableViewCellDelegate {
     func editProfileTableVİewCell(_ cell: EditProfileTableViewCell, didupdateField updatedModel: EditProfileFormModel) {
         //update the model
+        self.newname = updatedModel.value ?? self.name
+        self.newusername = updatedModel.value ?? self.username
+        self.newbio = updatedModel.value ?? self.bio
         print(updatedModel.value ?? "nil")
     }
 }

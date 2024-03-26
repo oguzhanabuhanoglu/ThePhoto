@@ -118,8 +118,8 @@ public class DatabaseManager {
     public func getPosts(for username: String, completion: @escaping (Result<[Post], Error>) -> Void){
         let ref = database.collection("users").document(username).collection("posts")
 
-        ref.order(by: "postedDate", descending: true).getDocuments { snapshot, error in
-            guard let posts = snapshot?.documents.compactMap({Post(with: $0.data())}), error == nil else {
+        ref.getDocuments { snapshot, error in
+            guard let posts = snapshot?.documents.compactMap({ Post(with: $0.data()) }).sorted(by: { return $0.date! > $1.date! }) , error == nil else {
                 return
             }
             completion(.success(posts))
@@ -128,7 +128,7 @@ public class DatabaseManager {
     
     
     
-    public func getFeedPosts(for usernames: [String], completion: @escaping (Result<[Post], Error>) -> Void) {
+    /*public func getFeedPosts(for usernames: [String], completion: @escaping (Result<[Post], Error>) -> Void) {
         let group = DispatchGroup()
         var allPosts: [Post] = []
      
@@ -154,7 +154,7 @@ public class DatabaseManager {
             completion(.success(allPosts))
             print(allPosts)
         }
-    }
+    }*/
     
     
     //get particular post for notifications
@@ -199,15 +199,21 @@ public class DatabaseManager {
     }
     
 
-    
-    public func deleteNotificationsFromMe(targetUsername: String, completion: @escaping (Bool) -> Void){
+    public func deleteNotificationsFromMe(targetUsername: String, completion: @escaping (Bool) -> Void) {
         guard let username = UserDefaults.standard.string(forKey: "username") else {
+            completion(false)
             return
         }
         let ref = database.collection("users").document(username).collection("notifications")
-        ref.document("\(targetUsername)_3").delete()
+        ref.document("\(targetUsername)_3").delete { error in
+            if let error = error {
+                print("Error deleting notification: \(error)")
+                completion(false)
+            } else {
+                completion(true)
+            }
+        }
     }
-    
     
     public func deleteNotificationsFromTarget(targetUsername: String, completion: @escaping (Bool) -> Void){
         guard let username = UserDefaults.standard.string(forKey: "username") else {

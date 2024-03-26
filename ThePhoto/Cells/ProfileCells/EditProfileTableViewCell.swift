@@ -61,7 +61,7 @@ class EditProfileTableViewCell: UITableViewCell, UITextFieldDelegate {
     public func configure(with model: EditProfileFormModel) {
         self.model = model
         label.text = model.label
-        field.placeholder = model.placeholdet
+        field.placeholder = model.placeholder
         field.text = model.value
     }
     

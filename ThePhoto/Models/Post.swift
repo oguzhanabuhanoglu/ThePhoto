@@ -16,6 +16,10 @@ public struct Post : Codable, Equatable {
     var postedDate: String
     var likers: [String]
     
+    var date: Date? {
+        return DateFormatter.formatter.date(from: postedDate)
+    }
+    
     //to get post data from storage
     var storageReference : String? {
         guard let username = UserDefaults.standard.string(forKey: "username") else {

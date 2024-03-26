@@ -201,10 +201,34 @@ extension NotificationsViewController: LikeNotificationTableViewCellDelegate, Co
                         print("failed when addin friend")
                     }else{
                         DatabaseManager.isFriend = true
-                        DispatchQueue.main.async {
-                            self.tableView.reloadData()
-                            //DELETE ROW AT THE MOMENT
+                        DatabaseManager.shared.deleteNotificationsFromMe(targetUsername: viewModel.username) { success in
+                            if !success {
+                                print("issue on delete notification")
+                            }else{
+                                DispatchQueue.main.async {
+                                    if let index = self.models.firstIndex(where: { $0.username == viewModel.username }) {
+                                        // İlgili satırın indeksini viewModel dizisinden bul
+                                        if let rowIndex = self.viewModels.firstIndex(where: {
+                                            if case .firendRequest(let currentViewModel) = $0 {
+                                                return currentViewModel.username == viewModel.username
+                                            } else {
+                                                return false
+                                            }
+                                        }) {
+                                            // İlgili satırı tablodan kaldır
+                                            self.viewModels.remove(at: rowIndex)
+                                            DispatchQueue.main.async {
+                                                // Tabloyu güncelle
+                                                self.tableView.deleteRows(at: [IndexPath(row: rowIndex, section: 0)], with: .automatic)
+                                                self.tableView.reloadData()
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                            }
                         }
+                        
                     }
                 }
             }
@@ -218,15 +242,29 @@ extension NotificationsViewController: LikeNotificationTableViewCellDelegate, Co
             if !success {
                 print("issue on delete request")
             }else{
-                DatabaseManager.shared.deleteNotificationsFromMe(targetUsername: viewModel.username) { success in
+              DatabaseManager.shared.deleteNotificationsFromMe(targetUsername: viewModel.username) { success in
                     if !success {
                         print("issue on delete notification")
                     }else{
-                        DispatchQueue.main.async {
-                            self.tableView.reloadData()
-                            //DELETE ROW AT THE MOMENT
+                     
+                        if let index = self.models.firstIndex(where: { $0.username == viewModel.username }) {
+                            // İlgili satırın indeksini viewModel dizisinden bul
+                            if let rowIndex = self.viewModels.firstIndex(where: {
+                                if case .firendRequest(let currentViewModel) = $0 {
+                                    return currentViewModel.username == viewModel.username
+                                } else {
+                                    return false
+                                }
+                            }) {
+                                // İlgili satırı tablodan kaldır
+                                self.viewModels.remove(at: rowIndex)
+                                DispatchQueue.main.async {
+                                    // Tabloyu güncelle
+                                    self.tableView.deleteRows(at: [IndexPath(row: rowIndex, section: 0)], with: .automatic)
+                                    
+                                }
+                            }
                         }
-                        
                     }
                 }
             }

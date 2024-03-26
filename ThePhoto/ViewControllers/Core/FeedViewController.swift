@@ -53,48 +53,80 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
         guard let username = UserDefaults.standard.string(forKey: "username") else {
             return
         }
-        print(username)
-        var usernameArray: [String] = []
-       
-       
+        let userGroup = DispatchGroup()
+        userGroup.enter()
+        
+        var allPosts: [Post] = []
+        
         DatabaseManager.shared.getFriends(for: username) { usernames in
-            usernameArray = usernames
-            usernameArray.append(username)
-            print(usernameArray)
+            defer {
+                userGroup.leave()
+            }
             
-            DatabaseManager.shared.getFeedPosts(for: usernameArray) { result in
-                DispatchQueue.main.async {
-                    switch result {
-                    case.success(var posts):
+            let users = usernames + [username]
+            
+            for current in users {
+                userGroup.enter()
+                DatabaseManager.shared.getPosts(for: current) { result in
+                    defer{
+                        userGroup.leave()
+                    }
                     
-                        self.viewModels.removeAll()
-                        let group = DispatchGroup()
-                        
-                        posts.forEach { model in
-                            group.enter()
-                            self.createViewModel(model: model, username: model.postedBy, completion: { success in
-                                defer {
-                                    group.leave()
-                                }
-                                if !success{
-                                    print("failed when creating vm")
-                                }
-                            })
-                        }
-                        
-                        group.notify(queue: .main) {
-                            self.collectionView?.reloadData()
-                        }
-                        
-                    case.failure(let error):
-                        print(error)
+                    switch result {
+                    case .success(let posts):
+                        allPosts.append(contentsOf: posts)
+                    case .failure(let error):
+                        break
                     }
                 }
             }
         }
         
-        
-           }
+        userGroup.notify(queue: .main) {
+            let group = DispatchGroup()
+            allPosts.forEach { model in
+                group.enter()
+                self.viewModels.removeAll()
+                self.createViewModel(model: model, username: model.postedBy) { success in
+                    defer{
+                        group.leave()
+                    }
+                    if !success{
+                        print("failed  to create VM")
+                    }
+                }
+            }
+           
+            group.notify(queue: .main) {
+                self.viewModels = self.viewModels.sorted(by: { first, second in
+                    var date1: Date?
+                    var date2: Date?
+                    first.forEach { type in
+                        switch type {
+                        case .timesTamp(let viewModel):
+                            date1 = viewModel.date
+                        default:
+                            break
+                        }
+                    }
+                    second.forEach { type in
+                        switch type {
+                        case .timesTamp(let viewModel):
+                            date2 = viewModel.date
+                        default:
+                            break
+                        }
+                    }
+                    
+                    if let date1 = date1, let date2 = date2{
+                        return date1 > date2
+                    }
+                    return false
+                })
+                self.collectionView?.reloadData()
+            }
+        }
+    }
         
         private func createViewModel(model: Post, username: String, completion: @escaping (Bool) -> Void){
             
