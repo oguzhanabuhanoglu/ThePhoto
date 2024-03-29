@@ -126,39 +126,9 @@ public class DatabaseManager {
         }
     }
     
-    
-    
-    /*public func getFeedPosts(for usernames: [String], completion: @escaping (Result<[Post], Error>) -> Void) {
-        let group = DispatchGroup()
-        var allPosts: [Post] = []
-     
-        for username in usernames {
-            group.enter()
-            print(usernames)
-            
-            let ref = database.collection("users").document(username).collection("posts")
-            ref.order(by: "postedDate", descending: true).getDocuments { snapshot, error in
-                defer {
-                    group.leave()
-                }
-                guard let posts = snapshot?.documents.compactMap({Post(with: $0.data())}), error == nil else {
-                    return
-                }
-                print(posts)
-                allPosts.append(contentsOf: posts)
-                
-            }
-        }
-        
-        group.notify(queue: .main) {
-            completion(.success(allPosts))
-            print(allPosts)
-        }
-    }*/
-    
-    
-    //get particular post for notifications
-    public func getNotificatedPost(with identifier: String, from username: String, completion: @escaping (Post?) -> Void){
+
+    //get particular post
+    public func getPost(with identifier: String, from username: String, completion: @escaping (Post?) -> Void){
         let ref = database.collection("users").document(username).collection("posts").document(identifier)
         ref.getDocument { snapshot, error in
             guard let data = snapshot?.data(), error == nil else {
@@ -335,6 +305,30 @@ public class DatabaseManager {
         }
     }
     
+    
+    // MARK: Comments
+    public func getComments(postID: String, username: String, completion: @escaping ([Comments]) -> Void){
+        let ref = database.collection("users").document(username).collection("posts").document(postID).collection("comments")
+        ref.getDocuments { snapshot, error in
+            guard let comments = snapshot?.documents.compactMap({Comments(with: $0.data())}), error == nil else {
+                completion([])
+                return
+            }
+            completion(comments)
+        }
+    }
+    
+    public func createComments(comment: Comments, postID: String, username: String, completion: @escaping (Bool) -> Void) {
+        let uuid = UUID().uuidString
+        let ref = database.collection("users").document(username).collection("posts").document(postID).collection("comments").document(uuid)
+        guard let data = comment.asDictionary() else {
+            return
+        }
+        ref.setData(data) { error in
+            completion(error == nil)
+        }
+    }
+    
 }
 
 
@@ -347,30 +341,4 @@ public class DatabaseManager {
 
 
 
-/* ref.getDocuments { snapshot, error in
-     guard let posts = snapshot?.documents.compactMap({Post(with: $0.data())}), error == nil else {
-         return
-     }
-     completion(.success(posts))
- }*/
-/*public func getPosts(for username: String, completion: @escaping (Result<[Post], Error>) -> Void) {
-    let ref = database.collection("users").document(username).collection("posts").order(by: "postedDate", descending: true).addSnapshotListener { snapshot, error in
-        guard error == nil, snapshot?.isEmpty == false else {
-            // Hata durumunu işle veya return yap
-            if let error = error {
-                completion(.failure(error))
-            } else {
-                completion(.failure(error!)) // Hata türünü belirtin
-            }
-            return
-        }
 
-        // compactMap'ı sadece bir kere çağır
-        if var posts = snapshot?.documents.compactMap({ Post(with: $0.data()) }) {
-            completion(.success(posts))
-        } else {
-            // compactMap başarısız olduğunda işlemi hata olarak işle
-            completion(.failure(error!)) // Hata türünü belirtin
-        }
-    }
-}*/

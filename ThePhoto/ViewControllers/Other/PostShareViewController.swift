@@ -98,6 +98,7 @@ class PostShareViewController: UIViewController {
     }
 
     @objc func didTapShareButton(){
+        navigationItem.rightBarButtonItem?.isEnabled = false
         let username = UserDefaults.standard.string(forKey: "username")
         var caption = captionText.text ?? ""
         if caption == "" {
@@ -132,6 +133,7 @@ class PostShareViewController: UIViewController {
                     self?.tabBarController?.tabBar.isHidden = false
                     self?.tabBarController?.selectedIndex = 1
                     self?.navigationController?.popToRootViewController(animated: false)
+                    self?.navigationItem.rightBarButtonItem?.isEnabled = true
                     
                     
                 }

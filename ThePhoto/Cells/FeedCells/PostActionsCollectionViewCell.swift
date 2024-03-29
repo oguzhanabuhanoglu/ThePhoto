@@ -8,9 +8,9 @@
 import UIKit
 
 protocol PostActionsCollectionViewCellDelegate : AnyObject {
-    func didTapLikeButton(isLiked: Bool)
-    func didTapCommentButton()
-    func didTapLikeCount()
+    func didTapLikeButton(_ cell: PostActionsCollectionViewCell, index: Int, isLiked: Bool)
+    func didTapCommentButton(_ cell: PostActionsCollectionViewCell, index: Int)
+    func didTapLikeCount(_ cell: PostActionsCollectionViewCell, index: Int)
 }
 
 class PostActionsCollectionViewCell: UICollectionViewCell {
@@ -20,6 +20,7 @@ class PostActionsCollectionViewCell: UICollectionViewCell {
     weak var delegate: PostActionsCollectionViewCellDelegate?
     
     private var isLiked = false
+    var postID: String = ""
     
     let likeButton : UIButton = {
         let button = UIButton()
@@ -87,6 +88,7 @@ class PostActionsCollectionViewCell: UICollectionViewCell {
     func configure(with viewModel: PostActionsCollectionViewCellViewModel){
         let users = viewModel.likers
         likersLabel.text = "\(users.count)"
+        postID = viewModel.postID
         if viewModel.isLiked {
             let image = UIImage(systemName: "suit.heart.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 30))
             likeButton.setImage(image, for: UIControl.State.normal)
@@ -107,15 +109,15 @@ class PostActionsCollectionViewCell: UICollectionViewCell {
             likeButton.tintColor = .red
         }
         self.isLiked = !isLiked
-        delegate?.didTapLikeButton(isLiked: !isLiked)
+        delegate?.didTapLikeButton(self, index: 0, isLiked: !isLiked)
     }
     
     @objc func didTapCommentButton() {
-        delegate?.didTapCommentButton()
+        delegate?.didTapCommentButton(self, index: 0)
     }
     
     @objc func didTapLikersLabel(){
-        delegate?.didTapLikeCount()
+        delegate?.didTapLikeCount(self, index: 0)
     }
 
 

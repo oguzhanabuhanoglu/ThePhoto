@@ -13,6 +13,8 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
    
     private var viewModels = [[FeedCellTypes]]()
     
+    private var allPosts: [Post] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -22,11 +24,6 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "heart"), style: UIBarButtonItem.Style.done, target: self, action: #selector(didTapNotifications))
         configurationCollectionView()
         //fetchPost()
-        
-        //let navigationBarHeight = navigationController?.navigationBar.frame.height ?? 0
-        //FeedChallangeHeaderView().delegate = self
-        //view.addSubview(FeedChallangeHeaderView(frame: CGRect(x: 0, y: navigationBarHeight * 2, width: view.frame.size.width, height: view.frame.size.height / 17)))
-        
        
         
     }
@@ -54,8 +51,8 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
             return
         }
         let userGroup = DispatchGroup()
-        userGroup.enter()
         
+        userGroup.enter()
         var allPosts: [Post] = []
         
         DatabaseManager.shared.getFriends(for: username) { usernames in
@@ -84,6 +81,7 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
         
         userGroup.notify(queue: .main) {
             let group = DispatchGroup()
+            self.allPosts = allPosts
             allPosts.forEach { model in
                 group.enter()
                 self.viewModels.removeAll()
@@ -98,6 +96,13 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
             }
            
             group.notify(queue: .main) {
+                allPosts = allPosts.sorted(by: { first, second in
+                    var date1 = first.date
+                    var date2 = second.date
+                    return date1! > date2!
+                })
+                
+               
                 self.viewModels = self.viewModels.sorted(by: { first, second in
                     var date1: Date?
                     var date2: Date?
@@ -138,7 +143,7 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
                 let postData: [FeedCellTypes] = [
                     .poster(viewModel: PosterCollectionViewCellViewModel(username: username,profilePictureURL: profilePictureURL)),
                     .post(viewModel: PostCollectionViewCellViewModel(postUrl: postURL)),
-                    .actions(viewModel: PostActionsCollectionViewCellViewModel(isLiked: false, likers: [])),
+                    .actions(viewModel: PostActionsCollectionViewCellViewModel(postID: model.id, isLiked: false, likers: [])),
                     .caption(viewModel: PostCaptionCollectionViewCellViewModel(username: username, caption: model.caption)),
                     .timesTamp(viewModel: PostDatetimeCollectionViewCellViewModel(date: DateFormatter.formatter.date(from: model.postedDate) ?? Date()))
                 ]
@@ -304,45 +309,61 @@ extension FeedViewController: FeedChallangeHeaderCollectionReusableViewDelegate,
     
 }
 
+// MARK: Extensions
 
-    extension FeedViewController: PosterCollectionViewCellDelegate {
-        func didTapMoreButton() {
-            let actionSheet = UIAlertController(title: "Post Options", message: nil, preferredStyle: UIAlertController.Style.actionSheet)
-            actionSheet.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil))
-            actionSheet.addAction(UIAlertAction(title: "Report Post", style: .destructive, handler: { [weak self] _ in
-                self?.reportPost()
-            }))
-            present(actionSheet, animated: true)
-        }
-        
-        func reportPost(){
-            
-        }
-        
-        func didTapUsername() {
-            let vc = ProfileViewController(user: User(username: "Oguzhan", email: "Oguzhanabuhanoglu@gmail.com"))
-            navigationController?.pushViewController(vc, animated: true)
-        }
+extension FeedViewController: PosterCollectionViewCellDelegate {
+    func didTapMoreButton() {
+        let actionSheet = UIAlertController(title: "Post Options", message: nil, preferredStyle: UIAlertController.Style.actionSheet)
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil))
+        actionSheet.addAction(UIAlertAction(title: "Report Post", style: .destructive, handler: { [weak self] _ in
+            self?.reportPost()
+        }))
+        present(actionSheet, animated: true)
     }
     
+    func reportPost(){
+        
+    }
+    
+    func didTapUsername() {
+        let vc = ProfileViewController(user: User(username: "Oguzhan", email: "Oguzhanabuhanoglu@gmail.com"))
+        navigationController?.pushViewController(vc, animated: true)
+    }
+}
     
     
-    extension FeedViewController: PostActionsCollectionViewCellDelegate {
-        func didTapLikeButton(isLiked: Bool) {
-            //call database to update like state
+    
+extension FeedViewController: PostActionsCollectionViewCellDelegate {
+    func didTapLikeButton(_ cell: PostActionsCollectionViewCell, index: Int, isLiked: Bool) {
+        //sonra
+    }
+    
+    func didTapCommentButton(_ cell: PostActionsCollectionViewCell, index: Int) {
+        /*let tuple = allPosts[index]
+        let vc = PostViewController(post: tuple)
+        vc.title = "Post"
+        navigationController?.pushViewController(vc, animated: true)*/
+        
+        let post = allPosts[index]
+        if cell.postID == post.id{
+            
+            let popupView = CommentsPopUpView(frame: CGRect(x: 0, y: self.view.frame.size.height, width: self.view.frame.size.width, height: (self.view.frame.size.height / 10) * 8), post: post)
+                    
+            popupView.showInView(view: self.view)
         }
         
-        func didTapCommentButton() {
-           /* let vc = PostViewController(post: )
-            vc.title = "Post"
-            navigationController?.pushViewController(vc, animated: true)*/
-        }
-        
-        func didTapLikeCount() {
-            /*let vc = ListViewController(type: .likers(user: <#T##User#>))
-            vc.title = "List"
-            navigationController?.pushViewController(vc, animated: true)*/
-        }
+       /* var post = allPosts[index]
+        print(post.postedBy)
+        print(post.postedDate)
+        //let post = allPosts[index]
+        let popupView = CommentsPopUpView(frame: CGRect(x: 0, y: view.frame.size.height, width: view.frame.size.width, height: (view.frame.size.height / 10) * 8), post: post)
+                
+        popupView.showInView(view: self.view)*/
+    }
+    
+    func didTapLikeCount(_ cell: PostActionsCollectionViewCell, index: Int) {
+        //sonra
+    }
         
         
     }

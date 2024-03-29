@@ -318,7 +318,7 @@ extension NotificationsViewController: LikeNotificationTableViewCellDelegate, Co
         }
         
         //get post from database to show on post vc with identifier
-        DatabaseManager.shared.getNotificatedPost(with: postID, from: username) { [weak self] post in
+        DatabaseManager.shared.getPost(with: postID, from: username) { [weak self] post in
             DispatchQueue.main.async {
                 guard let post = post else {
                     let alert = UIAlertController(title: "Oops", message: "We are unable to open this post!", preferredStyle: UIAlertController.Style.alert)

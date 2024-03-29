@@ -8,6 +8,7 @@
 import Foundation
 
 struct PostActionsCollectionViewCellViewModel {
+    let postID: String
     let isLiked: Bool
     let likers: [String]
 }
