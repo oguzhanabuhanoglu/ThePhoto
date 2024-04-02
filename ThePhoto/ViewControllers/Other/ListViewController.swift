@@ -20,7 +20,7 @@ class ListViewController: UIViewController {
     // Mark - Init
     enum ListType {
         case friends(user: User)
-        case likers(user: User)
+        case likers(usernames: [String])
         
         var title: String{
             switch self {
@@ -71,9 +71,15 @@ class ListViewController: UIViewController {
                     self?.tableView.reloadData()
                 }
             }
-        case .likers(let user):
-            break
+        case .likers(let usernames):
+            viewModels = usernames.compactMap({
+                ListUserCellViewModel(imageUrl: nil, username: $0, name: nil)
+            })
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         }
+       
     }
     
 

@@ -50,9 +50,10 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
         guard let username = UserDefaults.standard.string(forKey: "username") else {
             return
         }
+        self.viewModels.removeAll()
         let userGroup = DispatchGroup()
-        
         userGroup.enter()
+        
         var allPosts: [Post] = []
         
         DatabaseManager.shared.getFriends(for: username) { usernames in
@@ -72,6 +73,7 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
                     switch result {
                     case .success(let posts):
                         allPosts.append(contentsOf: posts)
+                        print(allPosts.count)
                     case .failure(let error):
                         break
                     }
@@ -84,7 +86,7 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
             self.allPosts = allPosts
             allPosts.forEach { model in
                 group.enter()
-                self.viewModels.removeAll()
+                //self.viewModels.removeAll()
                 self.createViewModel(model: model, username: model.postedBy) { success in
                     defer{
                         group.leave()
@@ -97,8 +99,10 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
            
             group.notify(queue: .main) {
                 allPosts = allPosts.sorted(by: { first, second in
-                    var date1 = first.date
-                    var date2 = second.date
+                var date1 = first.date
+                var date2 = second.date
+                    print(allPosts[0].postedDate)
+                    print(allPosts[1].postedDate)
                     return date1! > date2!
                 })
                 
@@ -186,7 +190,7 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
         
         //COLLECTION VIEW
         func numberOfSections(in collectionView: UICollectionView) -> Int {
-            return viewModels.count == 0 ? 1 : viewModels.count
+            return viewModels.count == 0 ? 1  : viewModels.count
         }
         
         func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -221,7 +225,7 @@ class FeedViewController: UIViewController, UICollectionViewDelegate, UICollecti
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PostActionsCollectionViewCell.identifier, for: indexPath) as? PostActionsCollectionViewCell else {
                     fatalError()
                 }
-                cell.configure(with: viewModel)
+                cell.configure(with: viewModel, index: indexPath.section)
                 cell.delegate = self
                 return cell
                 
@@ -339,33 +343,22 @@ extension FeedViewController: PostActionsCollectionViewCellDelegate {
     }
     
     func didTapCommentButton(_ cell: PostActionsCollectionViewCell, index: Int) {
-        /*let tuple = allPosts[index]
-        let vc = PostViewController(post: tuple)
-        vc.title = "Post"
-        navigationController?.pushViewController(vc, animated: true)*/
-        
-        let post = allPosts[index]
-        if cell.postID == post.id{
-            
-            let popupView = CommentsPopUpView(frame: CGRect(x: 0, y: self.view.frame.size.height, width: self.view.frame.size.width, height: (self.view.frame.size.height / 10) * 8), post: post)
+        if index <= allPosts.count{
+            let post = allPosts[index]
+            let popupView = CommentsPopUpView(frame: CGRect(x: 0, y: view.frame.size.height, width: view.frame.size.width, height: (view.frame.size.height / 10) * 8), post: post)
                     
             popupView.showInView(view: self.view)
+        }else{
+            print("index out of range")
         }
-        
-       /* var post = allPosts[index]
-        print(post.postedBy)
-        print(post.postedDate)
-        //let post = allPosts[index]
-        let popupView = CommentsPopUpView(frame: CGRect(x: 0, y: view.frame.size.height, width: view.frame.size.width, height: (view.frame.size.height / 10) * 8), post: post)
-                
-        popupView.showInView(view: self.view)*/
     }
     
+    
     func didTapLikeCount(_ cell: PostActionsCollectionViewCell, index: Int) {
-        //sonra
-    }
-        
-        
+        let vc = ListViewController(type: .likers(usernames: []))
+        vc.title = "Likers"
+        navigationController?.pushViewController(vc, animated: true)
+         }
     }
     
     //CREATE COLLECTİON VİEW WİTH COMPOSITIONAL LAYOUT

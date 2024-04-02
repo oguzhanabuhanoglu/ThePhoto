@@ -11,7 +11,6 @@
 		B92681840BA390665856F1DC /* Pods_ThePhoto_ThePhotoUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7289503582FB367A658C8449 /* Pods_ThePhoto_ThePhotoUITests.framework */; };
 		BF1DA7492B5534F800047477 /* FeedChallangeHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1DA7482B5534F800047477 /* FeedChallangeHeaderView.swift */; };
 		BF1DA74B2B5739F100047477 /* SearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1DA74A2B5739F100047477 /* SearchResultViewController.swift */; };
-		BF255B2B2BB376AE00D134F1 /* CommentCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF255B2A2BB376AE00D134F1 /* CommentCollectionViewCell.swift */; };
 		BF255B2D2BB5C4E700D134F1 /* Comments.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF255B2C2BB5C4E700D134F1 /* Comments.swift */; };
 		BF255B2F2BB5C51300D134F1 /* CommentBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF255B2E2BB5C51300D134F1 /* CommentBarView.swift */; };
 		BF255B342BB620DB00D134F1 /* denemepopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF255B332BB620DB00D134F1 /* denemepopup.swift */; };
@@ -102,7 +101,6 @@
 		BEC6A94E7644AC33FAAF852E /* Pods-ThePhoto-ThePhotoUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ThePhoto-ThePhotoUITests.debug.xcconfig"; path = "Target Support Files/Pods-ThePhoto-ThePhotoUITests/Pods-ThePhoto-ThePhotoUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		BF1DA7482B5534F800047477 /* FeedChallangeHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedChallangeHeaderView.swift; sourceTree = "<group>"; };
 		BF1DA74A2B5739F100047477 /* SearchResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultViewController.swift; sourceTree = "<group>"; };
-		BF255B2A2BB376AE00D134F1 /* CommentCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCollectionViewCell.swift; sourceTree = "<group>"; };
 		BF255B2C2BB5C4E700D134F1 /* Comments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comments.swift; sourceTree = "<group>"; };
 		BF255B2E2BB5C51300D134F1 /* CommentBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentBarView.swift; sourceTree = "<group>"; };
 		BF255B332BB620DB00D134F1 /* denemepopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = denemepopup.swift; sourceTree = "<group>"; };
@@ -373,7 +371,6 @@
 				BFE5D2702B4C5CB100509302 /* FeedCells */,
 				BFC1BEB42BACB6C90048BBAA /* ListTableViewCell.swift */,
 				BF255B352BB632C300D134F1 /* CommentTableViewCell.swift */,
-				BF255B2A2BB376AE00D134F1 /* CommentCollectionViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -677,7 +674,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF255B2B2BB376AE00D134F1 /* CommentCollectionViewCell.swift in Sources */,
 				BFE2A47F2B49E58000EABD48 /* SignUpViewController.swift in Sources */,
 				BFE2A4812B49E5A200EABD48 /* AuthManager.swift in Sources */,
 				BFE2A4832B49E5B300EABD48 /* DatabaseManager.swift in Sources */,

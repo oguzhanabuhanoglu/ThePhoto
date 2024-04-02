@@ -21,6 +21,7 @@ class PostActionsCollectionViewCell: UICollectionViewCell {
     
     private var isLiked = false
     var postID: String = ""
+    var index: Int = 0
     
     let likeButton : UIButton = {
         let button = UIButton()
@@ -85,7 +86,8 @@ class PostActionsCollectionViewCell: UICollectionViewCell {
         
     }
     
-    func configure(with viewModel: PostActionsCollectionViewCellViewModel){
+    func configure(with viewModel: PostActionsCollectionViewCellViewModel, index: Int){
+        self.index = index
         let users = viewModel.likers
         likersLabel.text = "\(users.count)"
         postID = viewModel.postID
@@ -109,15 +111,16 @@ class PostActionsCollectionViewCell: UICollectionViewCell {
             likeButton.tintColor = .red
         }
         self.isLiked = !isLiked
-        delegate?.didTapLikeButton(self, index: 0, isLiked: !isLiked)
+        
+        delegate?.didTapLikeButton(self, index: index, isLiked: !isLiked)
     }
     
     @objc func didTapCommentButton() {
-        delegate?.didTapCommentButton(self, index: 0)
+        delegate?.didTapCommentButton(self, index: index )
     }
     
     @objc func didTapLikersLabel(){
-        delegate?.didTapLikeCount(self, index: 0)
+        delegate?.didTapLikeCount(self, index: index)
     }
 
 
