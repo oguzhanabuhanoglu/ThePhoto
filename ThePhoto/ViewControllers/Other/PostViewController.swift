@@ -62,15 +62,19 @@ class PostViewController: UIViewController, UICollectionViewDelegate, UICollecti
 
     private func createViewModel(model: Post, username: String, completion: @escaping (Bool) -> Void){
         
+        guard let currentUsername = UserDefaults.standard.string(forKey: "username") else{return}
         StorageManager.shared.profilePictureURL(for: username) { [weak self] profilePictureUrl in
             guard let postURL = URL(string: model.postUrl),let profilePictureURL = profilePictureUrl else {
                 completion(false)
                 return
             }
+            
+            let isLiked = model.likers.contains(currentUsername)
+            
             let postData: [FeedCellTypes] = [
                 .poster(viewModel: PosterCollectionViewCellViewModel(username: username,profilePictureURL: profilePictureURL)),
                 .post(viewModel: PostCollectionViewCellViewModel(postUrl: postURL)),
-                .actions(viewModel: PostActionsCollectionViewCellViewModel(postID: model.id, isLiked: false, likers: [])),
+                .actions(viewModel: PostActionsCollectionViewCellViewModel(postID: model.id, isLiked: isLiked, likers: model.likers)),
                 .caption(viewModel: PostCaptionCollectionViewCellViewModel(username: username, caption: model.caption)),
                 .timesTamp(viewModel: PostDatetimeCollectionViewCellViewModel(date: DateFormatter.formatter.date(from: model.postedDate) ?? Date()))
             ]
@@ -139,7 +143,12 @@ class PostViewController: UIViewController, UICollectionViewDelegate, UICollecti
 
 extension PostViewController: PostActionsCollectionViewCellDelegate {
     func didTapLikeButton(_ cell: PostActionsCollectionViewCell, index: Int, isLiked: Bool) {
-        //
+        DatabaseManager.shared.updateLikeState(state: isLiked ? .like : .unlike, postID: post.id, owner: post.postedBy) { success in
+            guard success else {
+                print("failed")
+                return
+            }
+        }
     }
     
     func didTapCommentButton(_ cell: PostActionsCollectionViewCell, index: Int) {
@@ -150,8 +159,11 @@ extension PostViewController: PostActionsCollectionViewCellDelegate {
     
     
     func didTapLikeCount(_ cell: PostActionsCollectionViewCell, index: Int) {
-        //
+        let vc = ListViewController(type: .likers(usernames: post.likers))
+        vc.title = "Likers"
+        navigationController?.pushViewController(vc, animated: true)
     }
+    
     
     
     

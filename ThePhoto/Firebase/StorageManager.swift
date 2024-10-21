@@ -6,6 +6,7 @@
 //
 
 import FirebaseStorage
+import Foundation
 
 public class StorageManager {
     

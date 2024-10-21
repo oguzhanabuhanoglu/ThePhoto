@@ -142,11 +142,11 @@ class CommentsPopUpView: UIView, CommentBarViewDelegate, UITableViewDelegate, UI
     private func fetchComments() {
         DatabaseManager.shared.getComments(postID: post.id, username: post.postedBy) { comments in
             self.comments.append(contentsOf: comments)
-            print(comments.count)
             DispatchQueue.main.async {
                         self.tableView.reloadData()
                     }
         }
+        
     }
     
     

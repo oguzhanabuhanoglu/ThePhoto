@@ -110,13 +110,13 @@ class PostActionsCollectionViewCell: UICollectionViewCell {
             likeButton.setImage(image, for: UIControl.State.normal)
             likeButton.tintColor = .red
         }
-        self.isLiked = !isLiked
-        
+
         delegate?.didTapLikeButton(self, index: index, isLiked: !isLiked)
+        self.isLiked = !isLiked
     }
     
     @objc func didTapCommentButton() {
-        delegate?.didTapCommentButton(self, index: index )
+        delegate?.didTapCommentButton(self, index: index)
     }
     
     @objc func didTapLikersLabel(){

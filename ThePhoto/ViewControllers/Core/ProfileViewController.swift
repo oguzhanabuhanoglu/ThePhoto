@@ -11,6 +11,8 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
     
     private var collectionView: UICollectionView?
     
+    
+    
     private let noActivityLabel : UILabel = {
         let label = UILabel()
         label.isHidden = true
@@ -62,6 +64,10 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
         super.viewDidLayoutSubviews()
         self.collectionView?.frame = view.bounds
         noActivityLabel.frame = CGRect(x: 0, y: view.frame.size.height * 0.45, width: view.frame.size.width, height: view.frame.size.height * 0.3)
+        
+        
+        
+        
     }
     
     private func configureNavBar() {
@@ -102,6 +108,9 @@ class ProfileViewController: UIViewController,UICollectionViewDelegate, UICollec
         let group = DispatchGroup()
         
         //DATA FOR COLLECTİON POSTS
+        
+        
+        
         group.enter()
         DatabaseManager.shared.isFollowing(targetUsername: user.username) { yes in
             if yes {

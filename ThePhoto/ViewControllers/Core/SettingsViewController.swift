@@ -50,6 +50,10 @@ final class SettingsViewController: UIViewController, UITableViewDelegate, UITab
                 self?.didTapEditProfile()
             },
             
+            SettingsCellModel(title: "Private Account", handler: {
+                self.didTapPrivateAccount()
+            }),
+            
             SettingsCellModel(title: "Invite Friends"){ [weak self] in
                 self?.didTapInviteFriends()
             },
@@ -107,6 +111,10 @@ final class SettingsViewController: UIViewController, UITableViewDelegate, UITab
         let navVC = UINavigationController(rootViewController: vc)
         navVC.modalPresentationStyle = .fullScreen
         present(navVC ,animated: true)
+    }
+    
+    private func didTapPrivateAccount(){
+        
     }
     
     private func didTapInviteFriends(){

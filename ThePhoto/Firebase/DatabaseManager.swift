@@ -99,6 +99,8 @@ public class DatabaseManager {
     
     // MARK: Post
     
+    static var secretProfile = false
+    
     public func createPost(newPost: Post, completion: @escaping (Bool) -> Void){
         guard let username = UserDefaults.standard.string(forKey: "username") else {
              completion(false)
@@ -350,7 +352,10 @@ public class DatabaseManager {
             
             switch state{
             case .like:
-                post.likers.append(currentUsername)
+                if !post.likers.contains(currentUsername){
+                    post.likers.append(currentUsername)
+                }
+                
             case.unlike:
                 post.likers.removeAll(where: {$0 == currentUsername})
             }
@@ -359,7 +364,10 @@ public class DatabaseManager {
                 completion(false)
                 return
             }
-            completion(true)
+            ref.setData(data) { error in
+                completion(error == nil)
+            }
+            
         }
     }
     
